@@ -1,0 +1,16 @@
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.report-card {
+    background: rgba(255, 255, 255, 0.933);
+    border: 1px solid #cacaca;
+    border-radius: 3px;
+    box-shadow: 3px 3px 0px #cacaca;
+}
+
+.report-card-body {
+    padding: 1em;
+}
