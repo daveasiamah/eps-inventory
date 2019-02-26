@@ -2,6 +2,10 @@ import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
+import jwt_decode from "jwt-decode";
+import setAuthToken from "./utils/setAuthToken";
+import { setCurrentUser } from "./actions/authActions";
+
 import "antd/dist/antd.min.css";
 
 //Importing Components
@@ -17,6 +21,16 @@ import AddSupplier from "./components/Suppliers/AddSupplier/AddSupplier";
 import ViewSuppliers from "./components/Suppliers/ViewSuppliers/ViewSuppliers";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
+
+//Check for token in localStorage
+if (localStorage.jwtToken) {
+  //Set auth token header auth
+  setAuthToken(localStorage.jwtToken);
+  //Decode token and get user info and expiry
+  const decoded = jwt_decode(localStorage.jwtToken);
+  //Set user and isAuthenticated
+  store.dispatch(setCurrentUser(decoded));
+}
 
 class App extends Component {
   render() {

@@ -35,6 +35,7 @@ class Register extends Component {
       this.setState({ errors: nextProps.errors });
     }
   }
+
   handleRegister = e => {
     e.preventDefault();
 
@@ -44,6 +45,7 @@ class Register extends Component {
       return;
     } else {
       let newUser = { name, email, password };
+
       console.log(`User created as: `, JSON.stringify(newUser));
       console.log(this.state.errors);
 
@@ -91,11 +93,6 @@ class Register extends Component {
           }}
         >
           <Form onSubmit={this.handleRegister} className="registration-form">
-            <div>
-              {errors.name}
-              {errors.email}
-              {errors.password}
-            </div>
             <SFormItem label="Full Name">
               {getFieldDecorator("name", {
                 rules: [

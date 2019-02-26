@@ -4,7 +4,7 @@ import { loginUser } from "../../actions/authActions";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Form, Icon, Input, Button, Card } from "antd";
-import axios from "axios";
+// import axios from "axios";
 import bgImage from "./login-bg3.jpeg";
 
 const FormItem = Form.Item;
@@ -23,38 +23,43 @@ const LoginPage = styled.div`
 `;
 
 class Login extends Component {
-  state = {
-    email: "",
-    password: "",
-    user: "",
-    errors: ""
-  };
+  constructor() {
+    super();
+
+    this.state = {
+      email: "",
+      password: "",
+      errors: {}
+    };
+  }
+
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.auth.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
 
   handleSubmit = e => {
     e.preventDefault();
 
-    const { email, password } = this.state;
-    if (!email || !password) {
-      this.setState({ errors: "Please enter email and password" });
-      return;
-    } else {
-      this.setState({ errors: "" });
-      let user = { email, password };
+    const userData = {
+      email: this.state.email,
+      password: this.state.password
+    };
 
-      // Send that product created to the server
-      axios
-        .post("http://localhost:5000/api/login", user)
-        .then(res => {
-          console.log("Success: " + JSON.stringify(res.data.success));
-          this.setState({ errors: "" }, this.props.form.resetFields());
-        })
-        .catch(
-          err => console.log(err),
-          this.setState({
-            errors: "Invalid login details, please check and try again."
-          })
-        );
-    }
+    console.log(`User logged in as: `, JSON.stringify(userData));
+
+    this.props.loginUser(userData, this.props.history);
   };
 
   handleEmail = e => {
@@ -84,25 +89,8 @@ class Login extends Component {
               borderTop: "3px solid #40A9FF"
             }}
           >
-            {errors ? (
-              <div
-                style={{
-                  padding: "10px",
-                  border: "1px #dedede solid",
-                  borderRadius: "3px 3px",
-                  color: "red",
-                  textAlign: "left"
-                }}
-              >
-                {errors}
-              </div>
-            ) : null}
             <Form onSubmit={this.handleSubmit} className="login-form">
-              <FormItem
-                label="Email"
-                // help="Should be like user@domain.com"
-                // validateStatus="error"
-              >
+              <FormItem label="Email">
                 {getFieldDecorator("email", {
                   rules: [
                     {
