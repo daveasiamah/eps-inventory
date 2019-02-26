@@ -237,18 +237,17 @@ class AddSupplier extends Component {
                 }}
               >
                 <Button
+                  style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
+                  onClick={this.handleCancel}
+                >
+                  Cancel
+                </Button>
+                <Button
                   type="primary"
                   style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
                   onClick={this.handleAddSupplier}
                 >
                   Add Supplier
-                </Button>
-
-                <Button
-                  style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
-                  onClick={this.handleCancel}
-                >
-                  Cancel
                 </Button>
               </div>
             </Form>

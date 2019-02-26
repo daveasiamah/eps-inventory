@@ -269,18 +269,17 @@ class AddItem extends Component {
                 }}
               >
                 <Button
+                  style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
+                  onClick={this.reset}
+                >
+                  Cancel
+                </Button>
+                <Button
                   type="primary"
                   style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
                   onClick={this.handleAddItem}
                 >
                   Add Item
-                </Button>
-
-                <Button
-                  style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
-                  onClick={this.reset}
-                >
-                  Cancel
                 </Button>
               </div>
             </Form>

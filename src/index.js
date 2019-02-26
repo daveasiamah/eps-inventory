@@ -1,16 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-
+import Footer from "./components/Footer/Footer";
 import { BrowserRouter } from "react-router-dom";
 import * as serviceWorker from "./serviceWorker";
-// import Footer from "./components/Footer/Footer";
+
 import "./index.css";
 
 ReactDOM.render(
   <BrowserRouter>
     <React.Fragment>
       <App />
+      <Footer />
     </React.Fragment>
   </BrowserRouter>,
   document.getElementById("root")

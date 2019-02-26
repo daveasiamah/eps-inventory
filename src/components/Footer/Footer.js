@@ -9,13 +9,14 @@ const StyledFooter = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  height: 35px;
+  height: 30px;
   line-height: 47px;
   width: 100%;
   text-align: center;
-  z-index: 100;
+  z-index: 9999;
   margin-top: 10px;
-  background-color: rgba(255, 255, 255, 1);
+  /* padding-top: 30px; */
+  background-color: white;
 `;
 
 const Footer = () => {

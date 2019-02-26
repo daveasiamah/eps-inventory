@@ -1,29 +1,33 @@
 import React, { Component } from "react";
-import { Form, Icon, Input, Button, Checkbox, Card } from "antd";
-import { NavLink } from "react-router-dom";
+import { connect } from "react-redux";
+import { loginUser } from "../../actions/authActions";
+import PropTypes from "prop-types";
 import styled from "styled-components";
+import { Form, Icon, Input, Button, Card } from "antd";
+import axios from "axios";
 import bgImage from "./login-bg3.jpeg";
-// import bgImage from "./datacenter.jpg";
 
 const FormItem = Form.Item;
 
 const LoginPage = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 50px 0 50px;
-  padding-bottom: 100px;
-  background: no-repeat center/ 100% 100% url(${bgImage});
-
+  justify-items: center;
+  padding: 100px 0 50px;
+  padding-bottom: 315px;
+  /* padding-top: 315px; */
   z-index: -1;
+  background: no-repeat center/ 100% 100% url(${bgImage});
 `;
 
 class Login extends Component {
   state = {
     email: "",
     password: "",
-    user: ""
-    // isNavBarHidden: null
+    user: "",
+    errors: ""
   };
 
   handleSubmit = e => {
@@ -31,64 +35,41 @@ class Login extends Component {
 
     const { email, password } = this.state;
     if (!email || !password) {
-      alert("Please enter email and password");
+      this.setState({ errors: "Please enter email and password" });
       return;
     } else {
+      this.setState({ errors: "" });
       let user = { email, password };
 
-      // console.log(user);
-      console.log(`Here you go!: `, JSON.stringify(user));
-
       // Send that product created to the server
-      fetch("http://localhost:5000/api/login", {
-        method: "POST",
-        body: JSON.stringify(user),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      }).then(res => {
-        res
-          .json()
-          .then(data => {
-            console.log("successful" + JSON.stringify(data));
-            alert("Login Successfull!");
+      axios
+        .post("http://localhost:5000/api/login", user)
+        .then(res => {
+          console.log("Success: " + JSON.stringify(res.data.success));
+          this.setState({ errors: "" }, this.props.form.resetFields());
+        })
+        .catch(
+          err => console.log(err),
+          this.setState({
+            errors: "Invalid login details, please check and try again."
           })
-          .catch(err => console.log(err));
-      });
+        );
     }
   };
 
   handleEmail = e => {
-    console.log(e.target.value);
     this.setState({ email: e.target.value });
   };
+
   handlePassword = e => {
-    console.log(e.target.value);
     this.setState({ password: e.target.value });
   };
-  handleRegister = e => {
-    alert("Please contact the developer!");
-    console.log("User registration");
-  };
-
-  // componentDidMount() {
-  //   this.setState({ isNavBarHidden: true });
-  // }
 
   render() {
+    const { errors } = this.state;
+    const { getFieldDecorator } = this.props.form;
     return (
       <React.Fragment>
-        {/* <h2>
-          Account Login
-          <hr
-            style={{
-              backgroundColor: "#dedede",
-              border: "none",
-              height: "1px"
-            }}
-          />
-        </h2> */}
         <LoginPage>
           <Card
             bordered={true}
@@ -103,55 +84,65 @@ class Login extends Component {
               borderTop: "3px solid #40A9FF"
             }}
           >
-            <div style={{ textAlign: "center", marginBottom: "30px" }}>
-              <h1>
-                Login EPS-IMS
-                <hr
-                  style={{
-                    backgroundColor: "#dedede",
-                    border: "none",
-                    height: "1px"
-                  }}
-                />
-              </h1>
-            </div>
+            {errors ? (
+              <div
+                style={{
+                  padding: "10px",
+                  border: "1px #dedede solid",
+                  borderRadius: "3px 3px",
+                  color: "red",
+                  textAlign: "left"
+                }}
+              >
+                {errors}
+              </div>
+            ) : null}
             <Form onSubmit={this.handleSubmit} className="login-form">
               <FormItem
                 label="Email"
                 // help="Should be like user@domain.com"
                 // validateStatus="error"
               >
-                <Input
-                  prefix={
-                    <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
-                  }
-                  placeholder="Enter Email"
-                  onChange={this.handleEmail}
-                />
+                {getFieldDecorator("email", {
+                  rules: [
+                    {
+                      type: "email",
+                      message: "The input is not a valid Email!"
+                    },
+                    {
+                      required: true,
+                      message: "Please enter your email"
+                    }
+                  ]
+                })(
+                  <Input
+                    prefix={
+                      <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
+                    }
+                    placeholder="Enter Email"
+                    onChange={this.handleEmail}
+                  />
+                )}
               </FormItem>
-              <FormItem
-                label="Password"
-                // help="Should be alpha numeric 8 characters or more."
-                // validateStatus="error"
-              >
-                <Input
-                  prefix={
-                    <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
-                  }
-                  type="password"
-                  placeholder="Enter Password"
-                  onChange={this.handlePassword}
-                />
+              <FormItem label="Password">
+                {getFieldDecorator("password", {
+                  rules: [
+                    { required: true, message: "Please enter your password" }
+                  ]
+                })(
+                  <Input.Password
+                    prefix={
+                      <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
+                    }
+                    type="password"
+                    placeholder="Enter Password"
+                    onChange={this.handlePassword}
+                  />
+                )}
               </FormItem>
               <FormItem>
-                <Checkbox>Remember me</Checkbox>
-                <a
-                  className="login-form-forgot"
-                  href="#Login"
-                  style={{ float: "right" }}
-                >
-                  Forgot password
-                </a>
+                {/* <Checkbox>Remember me</Checkbox> */}
+
                 <Button
                   type="primary"
                   htmlType="submit"
@@ -160,10 +151,17 @@ class Login extends Component {
                 >
                   Log in
                 </Button>
-                Or{" "}
+                <a
+                  className="login-form-forgot"
+                  href="/login"
+                  style={{ float: "right" }}
+                >
+                  Forgot password
+                </a>
+                {/* Or{" "}
                 <NavLink to="/register" exact>
                   Register User
-                </NavLink>
+                </NavLink> */}
               </FormItem>
             </Form>
           </Card>
@@ -173,4 +171,20 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const UserLogin = Form.create({ name: "login" })(Login);
+
+Login.propTypes = {
+  loginUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  { loginUser }
+)(UserLogin);

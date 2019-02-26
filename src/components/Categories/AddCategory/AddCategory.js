@@ -154,16 +154,16 @@ class AddCategory extends Component {
             >
               <StyledButton
                 style={{ padding: "5px 10px", margin: "5px" }}
+                onClick={this.handleCancel}
+              >
+                Cancel
+              </StyledButton>
+              <StyledButton
+                style={{ padding: "5px 10px", margin: "5px" }}
                 type="primary"
                 onClick={this.handleAddCategory}
               >
                 Add Category
-              </StyledButton>
-              <StyledButton
-                style={{ padding: "5px 10px", margin: "5px" }}
-                onClick={this.handleCancel}
-              >
-                Cancel
               </StyledButton>
             </div>
           </Card>

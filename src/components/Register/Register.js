@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { Form, Icon, Input, Button, Card } from "antd";
-import { NavLink } from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { registerUser } from "../../actions/authActions";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const FormItem = Form.Item;
@@ -14,70 +17,64 @@ const RegisterPage = styled.div`
   justify-content: center;
   align-items: center;
   padding: 50px 0 50px;
-  padding-bottom: 100px;
-  background: #f0f2f5;
+  padding-bottom: 300px;
+  /* background: #f0f2f5; */
+  z-index: -1;
+  background: none;
 `;
 class Register extends Component {
   state = {
     name: "",
     email: "",
     password: "",
-    password2: "",
-    error: ""
+    errors: {}
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
   handleRegister = e => {
     e.preventDefault();
 
-    const { name, email, password, password2 } = this.state;
+    const { name, email, password } = this.state;
     if (!email || !password || !name) {
-      alert("Please enter email and password");
+      this.setState({ errors: "Please fill all fields." });
       return;
     } else {
-      let user = { name, email, password, password2 };
+      let newUser = { name, email, password };
+      console.log(`User created as: `, JSON.stringify(newUser));
+      console.log(this.state.errors);
 
-      // console.log(user);
-      console.log(`Here you go!: `, JSON.stringify(user));
+      this.props.registerUser(newUser, this.props.history);
 
-      //   // Send that product created to the server
-      //   fetch("http://localhost:5000/api/users", {
-      //     method: "POST",
-      //     body: JSON.stringify(user),
-      //     headers: {
-      //       Accept: "application/json",
-      //       "Content-Type": "application/json"
-      //     }
-      //   }).then(res => {
-      //     res
-      //       .json()
-      //       .then(data => {
-      //         console.log("successful" + data);
-      //         alert("Item created successfully!");
-      //       })
-      //       .catch(err => console.log(err));
-      //   });
+      // Send that user created to the server
     }
+    // const { resetFields } = this.props.form;
+    // resetFields();
   };
 
   handleName = e => {
-    console.log(e.target.value);
     this.setState({ name: e.target.value });
   };
+
   handleEmail = e => {
-    console.log(e.target.value);
     this.setState({ email: e.target.value });
   };
 
   handlePassword = e => {
-    console.log(e.target.value);
     this.setState({ password: e.target.value });
   };
-  handlePasswordConfirm = e => {
-    console.log(e.target.value);
-    this.setState({ password2: e.target.value });
+
+  handleReset = () => {
+    this.props.form.resetFields();
   };
 
   render() {
+    const { errors } = this.state;
+    const { getFieldDecorator } = this.props.form;
+
     return (
       <RegisterPage>
         <Card
@@ -89,60 +86,75 @@ class Register extends Component {
             borderBottomLeftRadius: "7px",
             borderBottomRightRadius: "7px",
             zIndex: 99,
-            opacity: 1.35,
+            opacity: 1,
             borderTop: "3px solid #40A9FF"
           }}
         >
-          <div style={{ textAlign: "center", marginBottom: "30px" }}>
-            <h1>
-              Register User
-              <hr
-                style={{
-                  backgroundColor: "#dedede",
-                  border: "none",
-                  height: "1px"
-                }}
-              />
-            </h1>
-          </div>
           <Form onSubmit={this.handleRegister} className="registration-form">
+            <div>
+              {errors.name}
+              {errors.email}
+              {errors.password}
+            </div>
             <SFormItem label="Full Name">
-              <Input
-                prefix={
-                  <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
-                }
-                placeholder="Enter full name"
-                onChange={this.handleName}
-              />
+              {getFieldDecorator("name", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please input your name!"
+                  }
+                ]
+              })(
+                <Input
+                  prefix={
+                    <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
+                  }
+                  placeholder="Enter full name"
+                  onChange={this.handleName}
+                />
+              )}
             </SFormItem>
             <SFormItem label="Email">
-              <Input
-                prefix={
-                  <Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />
-                }
-                placeholder="Enter Email"
-                onChange={this.handleEmail}
-              />
+              {getFieldDecorator("email", {
+                rules: [
+                  {
+                    type: "email",
+                    message: "The input is not a valid E-mail!"
+                  },
+                  {
+                    required: true,
+                    message: "Please input your E-mail!"
+                  }
+                ]
+              })(
+                <Input
+                  prefix={
+                    <Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />
+                  }
+                  type="email"
+                  placeholder="Enter Email"
+                  onChange={this.handleEmail}
+                />
+              )}
             </SFormItem>
             <SFormItem label="Password">
-              <Input
-                prefix={
-                  <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
-                }
-                type="password"
-                placeholder="Enter Password"
-                onChange={this.handlePassword}
-              />
-            </SFormItem>
-            <SFormItem label="Confirm Password">
-              <Input
-                prefix={
-                  <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
-                }
-                type="password"
-                placeholder="Confirm password"
-                onChange={this.handlePasswordConfirm}
-              />
+              {getFieldDecorator("password", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please enter a password"
+                  }
+                ]
+              })(
+                <Input.Password
+                  prefix={
+                    <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
+                  }
+                  type="password"
+                  placeholder="Enter Password"
+                  onChange={this.handlePassword}
+                />
+              )}
             </SFormItem>
             <SFormItem>
               <Button
@@ -157,6 +169,16 @@ class Register extends Component {
               <NavLink to="/login" exact>
                 LogIn
               </NavLink>
+              <span style={{ padding: "10px", float: "right" }}>
+                <Button
+                  onClick={e => {
+                    e.preventDefault();
+                    this.props.form.resetFields();
+                  }}
+                >
+                  Clear
+                </Button>
+              </span>
             </SFormItem>
           </Form>
         </Card>
@@ -164,4 +186,21 @@ class Register extends Component {
     );
   }
 }
-export default Register;
+
+const UserRegistration = Form.create({ name: "register" })(Register);
+
+Register.propTypes = {
+  registerUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  { registerUser }
+)(withRouter(UserRegistration));

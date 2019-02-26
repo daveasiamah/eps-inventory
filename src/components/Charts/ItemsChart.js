@@ -56,7 +56,7 @@ class ItemsChart extends Component {
         );
         console.log(typeof prices);
         console.log("Converted result is: " + typeof results);
-
+        //TODO: Populate series with result of prices from api data
         // this.setState({
         //   series: {
         //     ...this.state.series,

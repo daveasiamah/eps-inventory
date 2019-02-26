@@ -69,7 +69,7 @@ class Inventory extends Component {
       exp_date: "",
       manufacture_date: "",
       quantity: "",
-      items: [], //Data from API
+      items: [],
       selectedItem: [],
       suppliers: [],
       inventory: [],
@@ -612,7 +612,7 @@ const columns = [
   },
   {
     title: "Category",
-    dataIndex: "category_id",
+    dataIndex: "category",
 
     width: "10%"
   },
