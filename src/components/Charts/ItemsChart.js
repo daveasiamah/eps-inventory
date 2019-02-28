@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
+import axios from "axios";
 
 class ItemsChart extends Component {
   state = {
     options: {
       chart: {
+        height: 450,
+        stacked: false,
         foreColor: "black"
       },
       xaxis: {
@@ -32,44 +35,43 @@ class ItemsChart extends Component {
   };
 
   componentDidMount() {
-    fetch(`http://localhost:5000/api/items`, { method: "GET" })
-      .then(response => response.json())
+    axios
+      .get(`http://localhost:5000/api/items`)
       .then(items => {
-        // console.log(items);
-        let item = items.map(item => item.item_name);
-        console.log(item);
+        const Items = items.data;
+
+        const ItemNames = Items.map(item => item.item_name);
+
+        const ItemPrice = Items.map(item => item.price);
+
         this.setState({
           options: {
             ...this.state.options,
             xaxis: {
               ...this.state.options.xaxis,
               ...this.state.options.xaxis.categories,
-              categories: item
+              categories: ItemNames
             }
           }
         });
 
-        let prices = items.map(price => price.price);
-        const results = Object.keys(prices).map(
-          price => prices[price],
-          console.log(prices)
-        );
-        console.log(typeof prices);
-        console.log("Converted result is: " + typeof results);
-        //TODO: Populate series with result of prices from api data
-        // this.setState({
-        //   series: {
-        //     ...this.state.series,
-        //     series: [results]
-        //   }
-        // });
+        this.setState({
+          series: [
+            {
+              ...this.state.series[0],
+              data: ItemPrice
+            }
+          ]
+        });
+
+        console.log(this.state.series);
       })
       .catch(error => console.log(error));
   }
 
   render() {
     return (
-      <div className="pie-chart" style={{ objectFit: "fill", padding: "5px" }}>
+      <div className="charts" style={{ objectFit: "fill", padding: "5px" }}>
         <Chart
           options={this.state.options}
           series={this.state.series}

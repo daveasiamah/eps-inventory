@@ -8,7 +8,6 @@ import { setCurrentUser } from "./actions/authActions";
 
 import "antd/dist/antd.min.css";
 
-//Importing Components
 import AddCategory from "./components/Categories/AddCategory/AddCategory";
 import ViewCategories from "./components/Categories/ViewCategories/ViewCategories";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -88,8 +87,6 @@ const DefaultContainer = () => (
         path="/suppliers/view/suppliers"
         component={ViewSuppliers}
       />
-      {/* <Redirect from="/" to="/login/" /> */}
-      {/* <Route path="*" component={NotFoundPage} /> */}
     </Switch>
   </React.Fragment>
 );

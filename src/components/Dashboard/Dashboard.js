@@ -34,14 +34,6 @@ const DashCard = styled.div`
 //   }
 // `;
 
-// const ChartFrame = styled.div`
-//   background-color: "#fff";
-//   box-shadow: "3px 3px 0 #bababa";
-//   border: "1px solid #bababa";
-//   text-align: "center";
-//   padding: "10px";
-// `;
-
 const ImageCard = styled.img`
   width: 100px;
   height: 100px;
@@ -117,7 +109,7 @@ class Dashboard extends Component {
               display: "grid",
               width: "100%",
               gridGap: "20px",
-              gridTemplateColumns: "repeat(2,1fr)"
+              gridTemplateColumns: "repeat(1,1fr)"
             }}
           >
             <div
@@ -148,4 +140,5 @@ class Dashboard extends Component {
     );
   }
 }
+
 export default Dashboard;

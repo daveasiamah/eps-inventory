@@ -48,7 +48,6 @@ class Register extends Component {
 
       console.log(`User created as: `, JSON.stringify(newUser));
       console.log(this.state.errors);
-
       this.props.registerUser(newUser, this.props.history);
 
       // Send that user created to the server
@@ -74,6 +73,7 @@ class Register extends Component {
   };
 
   render() {
+    console.log(this.props);
     const { errors } = this.state;
     const { getFieldDecorator } = this.props.form;
 
