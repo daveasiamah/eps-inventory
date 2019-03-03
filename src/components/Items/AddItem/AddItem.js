@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { PropTypes } from "prop-types";
 import { Button, Form, Input, InputNumber, Select, Card } from "antd";
 import styled from "styled-components";
 
@@ -33,52 +35,47 @@ class AddItem extends Component {
       categories: []
     };
   }
+  _isMounted = true;
 
   fetchCategories = () => {
     fetch(`http://localhost:5000/api/categories`, { method: "GET" })
       .then(response => response.json())
       .then(categories => {
         // console.log(categories, categories.length);
-        this.setState({ categories: categories });
+        if (this._isMounted) {
+          this.setState({ categories: categories });
+        }
       })
       .catch(err => {
         console.log(err);
-        alert("Oops! Something went wrong, contact the administrator");
       });
   };
 
   handleItemName = e => {
-    console.log(e.target.value);
     this.setState({ item_name: e.target.value });
   };
 
   handleDescription = e => {
-    console.log(e.target.value);
     this.setState({ description: e.target.value });
   };
 
   handleUnits = e => {
-    console.log(e.target.value);
     this.setState({ units: e.target.value });
   };
 
   handlePrice = value => {
-    console.log(value);
     this.setState({ price: value });
   };
 
   handleMinStock = e => {
-    // console.log(e);
     this.setState({ min_stock: e });
   };
 
   handleStatus = value => {
-    console.log(value);
     this.setState({ status: value });
   };
 
   handleRemarks = e => {
-    // console.log(e.target.value);
     this.setState({ remarks: e.target.value });
   };
 
@@ -108,7 +105,7 @@ class AddItem extends Component {
     };
 
     // console.log(newItem);
-    console.log(`Here you go!: `, JSON.stringify(newItem));
+    console.log(`Success: `, JSON.stringify(newItem));
 
     // Send that product created to the server
     fetch("http://localhost:5000/api/items", {
@@ -121,7 +118,7 @@ class AddItem extends Component {
     }).then(res => {
       res
         .json()
-        .then(data => {
+        .then(() => {
           // console.log("successful" + data);
           alert("Item created successfully!");
         })
@@ -129,27 +126,27 @@ class AddItem extends Component {
     });
   };
 
-  handleCancel = e => {
-    console.log(this.state);
-    // this.setState({ categories: [] });
-  };
+  // handleCancel = e => {
+  //   e.preventDefault();
+  //   this.props.form.resetFields();
+  // };
 
   handleItemCategory = value => {
-    // console.log(value);
     this.setState({ category: value });
   };
 
   componentDidMount() {
+    if (!this.props.auth.isAuthenticated) {
+      this.props.history.push("/login");
+    }
     this.fetchCategories();
   }
 
-  reset = () => {
-    this.props.form.resetFields();
-    console.log(this.props);
-  };
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
 
   render() {
-    // console.log(this.props);
     const umpGrid = {
       display: "grid",
       gridTemplateColumns: "2fr 1fr 1fr",
@@ -270,7 +267,11 @@ class AddItem extends Component {
               >
                 <Button
                   style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
-                  onClick={this.reset}
+                  // onClick={this.handleCancel}
+                  onClick={e => {
+                    e.preventDefault();
+                    this.props.form.resetFields();
+                  }}
                 >
                   Cancel
                 </Button>
@@ -290,4 +291,14 @@ class AddItem extends Component {
   }
 }
 
-export default AddItem;
+const NewItem = Form.create({ name: "addItem" })(AddItem);
+
+NewItem.propTypes = {
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps)(NewItem);

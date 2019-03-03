@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { PropTypes } from "prop-types";
+
 import {
   Select,
   Card,
@@ -76,10 +79,11 @@ class Inventory extends Component {
       pagination: {},
       disabled: true,
       loading: false,
-      validationError: "",
       errors: {}
     };
   }
+
+  _isMounted = true;
 
   handleTopUp = e => {
     e.preventDefault();
@@ -224,7 +228,9 @@ class Inventory extends Component {
         const pagination = { ...this.state.pagination };
         //Read total count from server
         pagination.total = items.length;
-        this.setState({ loading: false, items: items, pagination });
+        if (this._isMounted) {
+          this.setState({ loading: false, items: items, pagination });
+        }
       })
       .catch(err => console.log(err));
   };
@@ -236,7 +242,9 @@ class Inventory extends Component {
       .then(response => response.json())
       .then(suppliers => {
         // console.log(suppliers);
-        this.setState({ loading: false, suppliers: suppliers });
+        if (this._isMounted) {
+          this.setState({ loading: false, suppliers: suppliers });
+        }
         // console.log(this.state.suppliers);
       })
       .catch(err => console.log(err));
@@ -248,7 +256,9 @@ class Inventory extends Component {
       .then(response => response.json())
       .then(inventory => {
         // console.log(inventory);
-        this.setState({ loading: false, inventory: inventory });
+        if (this._isMounted) {
+          this.setState({ loading: false, inventory: inventory });
+        }
         // console.log(this.state.inventory);
       })
       .catch(err => console.log(err));
@@ -272,6 +282,13 @@ class Inventory extends Component {
   componentDidMount() {
     this.fetchItems();
     this.fetchSuppliers();
+    if (!this.props.auth.isAuthenticated) {
+      this.props.history.push("/login");
+    }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {
@@ -531,6 +548,10 @@ class Inventory extends Component {
                   <Button
                     type="default"
                     block
+                    onClick={e => {
+                      e.preventDefault();
+                      this.props.form.resetFields();
+                    }}
                     style={{
                       height: "50px",
                       padding: "15px",
@@ -648,4 +669,15 @@ const columns = [
     width: "9%"
   }
 ];
-export default Inventory;
+
+Inventory.propTypes = {
+  auth: PropTypes.object.isRequired
+};
+
+const InventoryForm = Form.create({ name: "inventory" })(Inventory);
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps)(InventoryForm);

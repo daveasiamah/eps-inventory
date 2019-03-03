@@ -34,6 +34,8 @@ class ItemsChart extends Component {
     ]
   };
 
+  _isMounted = true;
+
   componentDidMount() {
     axios
       .get(`http://localhost:5000/api/items`)
@@ -43,30 +45,34 @@ class ItemsChart extends Component {
         const ItemNames = Items.map(item => item.item_name);
 
         const ItemPrice = Items.map(item => item.price);
-
-        this.setState({
-          options: {
-            ...this.state.options,
-            xaxis: {
-              ...this.state.options.xaxis,
-              ...this.state.options.xaxis.categories,
-              categories: ItemNames
+        if (this._isMounted) {
+          this.setState({
+            options: {
+              ...this.state.options,
+              xaxis: {
+                ...this.state.options.xaxis,
+                ...this.state.options.xaxis.categories,
+                categories: ItemNames
+              }
             }
-          }
-        });
+          });
 
-        this.setState({
-          series: [
-            {
-              ...this.state.series[0],
-              data: ItemPrice
-            }
-          ]
-        });
-
-        console.log(this.state.series);
+          this.setState({
+            series: [
+              {
+                ...this.state.series[0],
+                data: ItemPrice
+              }
+            ]
+          });
+        }
+        // console.log(this.state.series);
       })
       .catch(error => console.log(error));
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {

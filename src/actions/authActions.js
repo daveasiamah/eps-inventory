@@ -8,7 +8,7 @@ export const registerUser = (userData, history) => dispatch => {
   axios
     .post("http://localhost:5000/api/users", userData)
     .then(res => {
-      console.log(res.message);
+      console.log(res.data.message);
       history.push("/login");
     })
     .catch(err =>
@@ -27,7 +27,7 @@ export const loginUser = userData => dispatch => {
     })
     .then(res => {
       //Save to localStorage
-      console.log(res.data);
+      //   console.log(res.data);
       const { Token } = res.data;
       //Set token to localStorage
       localStorage.setItem("jwtToken", Token);

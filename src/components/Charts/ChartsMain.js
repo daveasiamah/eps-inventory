@@ -28,9 +28,12 @@ class ChartsMain extends Component {
     };
   }
 
-  componentDidMount() {
-    this.setState({ loading: true });
+  _isMounted = true;
 
+  componentDidMount() {
+    if (this._isMounted) {
+      this.setState({ loading: true });
+    }
     fetch(url, { method: "GET" })
       .then(response => {
         if (response.ok) {
@@ -40,13 +43,18 @@ class ChartsMain extends Component {
         }
       })
       .then(items => {
-        console.log(items);
-        this.setState({ loading: false, data: [items.item] });
+        // console.log(items);
+        if (this._isMounted) {
+          this.setState({ loading: false, data: [items.item] });
+        }
       })
       .catch(err => {
         console.log(err);
-        this.setState({ loading: false });
       });
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {

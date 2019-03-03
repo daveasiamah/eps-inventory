@@ -13,7 +13,7 @@ const StyledFooter = styled.div`
   line-height: 47px;
   width: 100%;
   text-align: center;
-  z-index: 9999;
+  z-index: 999;
   margin-top: 10px;
   /* padding-top: 30px; */
   background-color: white;

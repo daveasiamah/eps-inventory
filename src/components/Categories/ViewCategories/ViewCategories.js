@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { PropTypes } from "prop-types";
+
 import { Table } from "antd";
 // import { Resizable } from "react-resizable";
 import { Button, Icon } from "antd";
@@ -14,6 +17,17 @@ class ViewCategories extends Component {
     pagination: {},
     loading: false
   };
+  _isMounted = true;
+
+  componentDidMount() {
+    if (!this.props.auth.isAuthenticated) {
+      this.props.history.push("/login");
+    }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
 
   handleTableChange = (pagination, filters, sorter) => {
     const pager = { ...this.state.pagination };
@@ -32,7 +46,7 @@ class ViewCategories extends Component {
 
   handleReset = () => {
     this.setState(this.defaultState);
-    console.log(this.defaultState);
+    // console.log(this.defaultState);
   };
 
   //Fetching data from API using native 'fetch() api'.
@@ -45,7 +59,9 @@ class ViewCategories extends Component {
         const pagination = { ...this.state.pagination };
         //Read total count from server
         pagination.total = categories.length;
-        this.setState({ loading: false, data: categories, pagination });
+        if (!this._isMounted) {
+          this.setState({ loading: false, data: categories, pagination });
+        }
       })
       .catch(err => console.log(err));
   };
@@ -57,7 +73,7 @@ class ViewCategories extends Component {
   };
 
   render() {
-    console.table(this.state.data);
+    // console.table(this.state.data);
     return (
       <React.Fragment>
         <div style={{ marginBottom: "100px" }}>
@@ -141,4 +157,12 @@ const columns = [
   }
 ];
 
-export default ViewCategories;
+ViewCategories.propTypes = {
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps)(ViewCategories);

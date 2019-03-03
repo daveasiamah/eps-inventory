@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { Form, Icon, Input, Button, Card } from "antd";
 // import axios from "axios";
 import bgImage from "./login-bg3.jpeg";
+import isEmpty from "../../validation/is-empty";
 
 const FormItem = Form.Item;
 
@@ -33,6 +34,7 @@ class Login extends Component {
     };
   }
 
+  //Redirect to Dashboard if already logged in
   componentDidMount() {
     if (this.props.auth.isAuthenticated) {
       this.props.history.push("/dashboard");
@@ -49,17 +51,22 @@ class Login extends Component {
     }
   }
 
-  handleSubmit = e => {
+  handleLogin = e => {
     e.preventDefault();
 
-    const userData = {
-      email: this.state.email,
-      password: this.state.password
-    };
+    if (!isEmpty(this.state.email, this.state.password)) {
+      const userData = {
+        email: this.state.email,
+        password: this.state.password
+      };
 
-    console.log(`User logged in as: `, JSON.stringify(userData));
-
-    this.props.loginUser(userData, this.props.history);
+      if (!isEmpty(this.props.loginUser(userData, this.props.history))) {
+        console.log(`Success!`);
+      }
+    } else {
+      console.log(this.props);
+      console.log("Please fill all fields!");
+    }
   };
 
   handleEmail = e => {
@@ -89,7 +96,13 @@ class Login extends Component {
               borderTop: "3px solid #40A9FF"
             }}
           >
-            <Form onSubmit={this.handleSubmit} className="login-form">
+            <h1 style={{ textAlign: "center" }}>Login EPS-IMS</h1>
+            <Form onSubmit={this.handleLogin} className="login-form">
+              {errors[2] ? (
+                <div style={{ color: "red", textAlign: "center" }}>
+                  {errors}
+                </div>
+              ) : null}
               <FormItem label="Email">
                 {getFieldDecorator("email", {
                   rules: [

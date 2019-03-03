@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { PropTypes } from "prop-types";
+
 import { NavLink } from "react-router-dom";
 import { Col, Row } from "antd";
 import styled from "styled-components";
@@ -48,6 +51,17 @@ const topColResponsiveProps = {
 };
 
 class Dashboard extends Component {
+  _isMounted = true;
+  componentDidMount() {
+    if (!this.props.auth.isAuthenticated) {
+      this.props.history.push("/login");
+    }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -107,7 +121,7 @@ class Dashboard extends Component {
           <div
             style={{
               display: "grid",
-              width: "100%",
+              // width: "100%",
               gridGap: "20px",
               gridTemplateColumns: "repeat(1,1fr)"
             }}
@@ -141,4 +155,12 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+Dashboard.propTypes = {
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps)(Dashboard);

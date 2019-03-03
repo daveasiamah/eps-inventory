@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { PropTypes } from "prop-types";
+
 import { Button, Card, Form, Input, Row, Col, Select } from "antd";
 import styled from "styled-components";
 import countries from "./countries.json";
@@ -30,6 +33,12 @@ class AddSupplier extends Component {
       remarks: "",
       status: ""
     };
+  }
+
+  componentDidMount() {
+    if (!this.props.auth.isAuthenticated) {
+      this.props.history.push("/login");
+    }
   }
 
   handleCancel = e => {
@@ -237,17 +246,17 @@ class AddSupplier extends Component {
                 }}
               >
                 <Button
-                  style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
-                  onClick={this.handleCancel}
-                >
-                  Cancel
-                </Button>
-                <Button
                   type="primary"
                   style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
                   onClick={this.handleAddSupplier}
                 >
                   Add Supplier
+                </Button>
+                <Button
+                  style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
+                  onClick={this.handleCancel}
+                >
+                  Cancel
                 </Button>
               </div>
             </Form>
@@ -258,4 +267,11 @@ class AddSupplier extends Component {
   }
 }
 
-export default AddSupplier;
+AddSupplier.propTypes = {
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+export default connect(mapStateToProps)(AddSupplier);

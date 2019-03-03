@@ -1,67 +1,27 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { PropTypes } from "prop-types";
+
 import { Table, Button, Icon } from "antd";
 // import { Grid, Cell } from "styled-css-grid";
 
-const columns = [
-  {
-    title: "Supplier Name",
-    dataIndex: "supplier_name",
-    // filters: [
-    //   { text: "Male", value: "male" },
-    //   { text: "Female", value: "female" }
-    // ],
-    // sorter: true,
-    // render: name => `${name.item_name}`
-    width: "15%"
-  },
-  {
-    title: "Phone",
-    dataIndex: "phone",
-    width: "15%"
-  },
-  {
-    title: "Email",
-    dataIndex: "email",
-
-    width: "10%"
-  },
-  {
-    title: "Address",
-    dataIndex: "address",
-    width: "9%"
-  },
-  {
-    title: "City",
-    dataIndex: "city",
-    width: "9%"
-  },
-  {
-    title: "Remarks",
-    dataIndex: "remarks",
-
-    width: "15%"
-  },
-  {
-    title: "Date Updated",
-    dataIndex: "updatedAt",
-    width: "9%"
-  },
-  {
-    title: "Date Created",
-    dataIndex: "createdAt",
-    width: "9%"
-  }
-];
 class ViewSuppliers extends Component {
+  constructor(props) {
+    super(props);
+    this.state = this.defaultState;
+  }
   defaultState = {
     data: [],
     pagination: {},
     loading: false
   };
-  constructor(props) {
-    super(props);
-    this.state = this.defaultState;
+
+  componentDidMount() {
+    if (!this.props.auth.isAuthenticated) {
+      this.props.history.push("/login");
+    }
   }
+
   handleTableChange = (pagination, filters, sorter) => {
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
@@ -151,4 +111,62 @@ class ViewSuppliers extends Component {
   }
 }
 
-export default ViewSuppliers;
+const columns = [
+  {
+    title: "Supplier Name",
+    dataIndex: "supplier_name",
+    // filters: [
+    //   { text: "Male", value: "male" },
+    //   { text: "Female", value: "female" }
+    // ],
+    // sorter: true,
+    // render: name => `${name.item_name}`
+    width: "15%"
+  },
+  {
+    title: "Phone",
+    dataIndex: "phone",
+    width: "15%"
+  },
+  {
+    title: "Email",
+    dataIndex: "email",
+
+    width: "10%"
+  },
+  {
+    title: "Address",
+    dataIndex: "address",
+    width: "9%"
+  },
+  {
+    title: "City",
+    dataIndex: "city",
+    width: "9%"
+  },
+  {
+    title: "Remarks",
+    dataIndex: "remarks",
+
+    width: "15%"
+  },
+  {
+    title: "Date Updated",
+    dataIndex: "updatedAt",
+    width: "9%"
+  },
+  {
+    title: "Date Created",
+    dataIndex: "createdAt",
+    width: "9%"
+  }
+];
+
+ViewSuppliers.propTypes = {
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+export default connect(mapStateToProps)(ViewSuppliers);

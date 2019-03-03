@@ -30,6 +30,12 @@ class Register extends Component {
     errors: {}
   };
 
+  componentDidMount() {
+    if (!this.props.auth.isAuthenticated) {
+      this.props.history.push("/login");
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
@@ -45,9 +51,12 @@ class Register extends Component {
       return;
     } else {
       let newUser = { name, email, password };
-
-      console.log(`User created as: `, JSON.stringify(newUser));
+      console.log(
+        `User created as: `,
+        JSON.stringify(newUser.name, newUser.email)
+      );
       console.log(this.state.errors);
+
       this.props.registerUser(newUser, this.props.history);
 
       // Send that user created to the server
@@ -73,7 +82,6 @@ class Register extends Component {
   };
 
   render() {
-    console.log(this.props);
     const { errors } = this.state;
     const { getFieldDecorator } = this.props.form;
 
@@ -92,7 +100,13 @@ class Register extends Component {
             borderTop: "3px solid #40A9FF"
           }}
         >
+          <h1 style={{ textAlign: "center" }}>Register User</h1>
           <Form onSubmit={this.handleRegister} className="registration-form">
+            <div>
+              {errors.name}
+              {errors.email}
+              {errors.password}
+            </div>
             <SFormItem label="Full Name">
               {getFieldDecorator("name", {
                 rules: [

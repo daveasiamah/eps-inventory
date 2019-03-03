@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { PropTypes } from "prop-types";
+
 import { Button, Form, Input, Select, Card } from "antd";
 import styled from "styled-components";
 
@@ -39,6 +42,12 @@ class AddCategory extends Component {
       description: "",
       status: ""
     };
+  }
+
+  componentDidMount() {
+    if (!this.props.auth.isAuthenticated) {
+      this.props.history.push("/login");
+    }
   }
 
   handleCancel = e => {
@@ -173,4 +182,14 @@ class AddCategory extends Component {
   }
 }
 
-export default AddCategory;
+const NewCategory = Form.create({ name: "addcategory" })(AddCategory);
+
+NewCategory.propTypes = {
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps)(NewCategory);

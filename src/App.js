@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
-import { setCurrentUser } from "./actions/authActions";
+import { setCurrentUser, logoutUser } from "./actions/authActions";
 
 import "antd/dist/antd.min.css";
 
@@ -25,10 +25,24 @@ import Register from "./components/Register/Register";
 if (localStorage.jwtToken) {
   //Set auth token header auth
   setAuthToken(localStorage.jwtToken);
+
   //Decode token and get user info and expiry
   const decoded = jwt_decode(localStorage.jwtToken);
+
   //Set user and isAuthenticated
   store.dispatch(setCurrentUser(decoded));
+
+  //Check for expired token
+  const currentTime = Date.now() / 1000;
+
+  if (decoded.exp < currentTime) {
+    //Logout user
+    store.dispatch(logoutUser());
+    //TODO: Clear current profile
+
+    //Redirect to login
+    window.location.href = "/login";
+  }
 }
 
 class App extends Component {
@@ -40,6 +54,7 @@ class App extends Component {
             <Route exact path="/login" component={LoginContainer} />
             <Route exact path="/register" component={RegisterContainer} />
             <Route component={DefaultContainer} />
+            <Route path="/" component={NotFoundPage} />
           </Switch>
         </React.Fragment>
       </Provider>
@@ -50,7 +65,7 @@ class App extends Component {
 const LoginContainer = () => (
   <React.Fragment>
     <Route exact path="/login" component={Login} />
-    {/* <Route path="*" component={NotFoundPage} /> */}
+    <Route component={NotFoundPage} />
     {/* <Footer /> */}
   </React.Fragment>
 );
@@ -59,12 +74,19 @@ const RegisterContainer = () => (
   <React.Fragment>
     <Switch>
       <Route extact path="/register" component={Register} />
-      {/* <Route path="*" component={NotFoundPage} /> */}
+      <Route component={NotFoundPage} />
     </Switch>
   </React.Fragment>
 );
 
-// const NotFoundPage = () => <h1>404 Page Not Found!</h1>;
+const NotFoundPage = ({ location }) => (
+  <div>
+    <h1>404 Page Not Found!</h1>
+    <h2>
+      No match found for <code>{location.pathname}</code>
+    </h2>
+  </div>
+);
 
 const DefaultContainer = () => (
   <React.Fragment>
@@ -87,6 +109,7 @@ const DefaultContainer = () => (
         path="/suppliers/view/suppliers"
         component={ViewSuppliers}
       />
+      <Route component={NotFoundPage} />
     </Switch>
   </React.Fragment>
 );

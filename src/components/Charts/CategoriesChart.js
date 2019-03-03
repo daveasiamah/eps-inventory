@@ -25,6 +25,14 @@ class CategoriesChart extends Component {
     };
   }
 
+  _isMounted = true;
+
+  componentDidMount() {}
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   render() {
     return (
       <div className="donut" style={{ objectFit: "fill", padding: "5px" }}>

@@ -1,30 +1,46 @@
 import React, { Component } from "react";
-import { Col, Card } from "antd";
+import { connect } from "react-redux";
+import { PropTypes } from "prop-types";
+import { Col, Card, Form } from "antd";
 import "./Reports.css";
-import styled, { css } from "styled-components";
+// import styled, { css } from "styled-components";
 import ChartsMain from "../Charts/ChartsMain";
 
-const Button = styled.button`
-  background: transparent;
-  border-radius: 3px;
-  border: 2px solid palevioletred;
-  color: palevioletred;
-  margin: 0 1em;
-  padding: 0.25em 1em;
+// const Button = styled.button`
+//   background: transparent;
+//   border-radius: 3px;
+//   border: 2px solid palevioletred;
+//   color: palevioletred;
+//   margin: 0 1em;
+//   padding: 0.25em 1em;
 
-  ${props =>
-    props.primary &&
-    css`
-      background: palevioletred;
-      color: white;
-      &:hover {
-        background: white;
-        color: palevioletred;
-      }
-    `};
-`;
+//   ${props =>
+//     props.primary &&
+//     css`
+//       background: palevioletred;
+//       color: white;
+//       &:hover {
+//         background: white;
+//         color: palevioletred;
+//       }
+//     `};
+// `;
 
 class Reports extends Component {
+  constructor(props) {
+    super(props);
+    this._isMounted = true;
+  }
+
+  componentDidMount() {
+    if (!this.props.isAuthenticated) {
+      this.props.history.push("/login");
+    }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
   render() {
     // const topColResponsiveProps = {
     //   xs: 24,
@@ -36,8 +52,8 @@ class Reports extends Component {
     return (
       <React.Fragment>
         <h1>Reports</h1>
-        <Button>Normal Button</Button>
-        <Button primary>Primary Button</Button>
+        {/* <Button>Normal Button</Button>
+        <Button primary>Primary Button</Button> */}
 
         <div className="report-grid">
           <Col>
@@ -77,9 +93,20 @@ class Reports extends Component {
             </Card>
           </Col>
         </div>
-        <ChartsMain />
+        <ChartsMain {...this.props} />
       </React.Fragment>
     );
   }
 }
-export default Reports;
+
+const MainReports = Form.create({ name: "reports" })(Reports);
+
+MainReports.propTypes = {
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps)(MainReports);
