@@ -59,7 +59,7 @@ class ViewCategories extends Component {
         const pagination = { ...this.state.pagination };
         //Read total count from server
         pagination.total = categories.length;
-        if (!this._isMounted) {
+        if (this._isMounted) {
           this.setState({ loading: false, data: categories, pagination });
         }
       })

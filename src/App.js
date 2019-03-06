@@ -1,13 +1,15 @@
 import React, { Component } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
+import { clearCurrentProfile } from "./actions/profileActions";
 
 import "antd/dist/antd.min.css";
-
+import PrivateRoute from "./common/PrivateRoutes/PrivateRoute";
+import CreateProfile from "./components/Create-Profile/CreateProfile";
 import AddCategory from "./components/Categories/AddCategory/AddCategory";
 import ViewCategories from "./components/Categories/ViewCategories/ViewCategories";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -38,8 +40,8 @@ if (localStorage.jwtToken) {
   if (decoded.exp < currentTime) {
     //Logout user
     store.dispatch(logoutUser());
-    //TODO: Clear current profile
-
+    //Clear current profile
+    store.dispatch(clearCurrentProfile());
     //Redirect to login
     window.location.href = "/login";
   }
@@ -51,10 +53,10 @@ class App extends Component {
       <Provider store={store}>
         <React.Fragment>
           <Switch>
+            <Route exact path="/" component={HomePage} />
             <Route exact path="/login" component={LoginContainer} />
             <Route exact path="/register" component={RegisterContainer} />
             <Route component={DefaultContainer} />
-            <Route path="/" component={NotFoundPage} />
           </Switch>
         </React.Fragment>
       </Provider>
@@ -64,35 +66,45 @@ class App extends Component {
 
 const LoginContainer = () => (
   <React.Fragment>
-    <Route exact path="/login" component={Login} />
-    <Route component={NotFoundPage} />
-    {/* <Footer /> */}
+    <Switch>
+      <Route exact path="/login" component={Login} />
+      {/* <Route path="" component={NotFoundPage} /> */}
+    </Switch>
   </React.Fragment>
 );
 
 const RegisterContainer = () => (
   <React.Fragment>
     <Switch>
-      <Route extact path="/register" component={Register} />
-      <Route component={NotFoundPage} />
+      <Route exact path="/register" component={Register} />
+      {/* <Route path="" component={NotFoundPage} /> */}
     </Switch>
   </React.Fragment>
 );
 
-const NotFoundPage = ({ location }) => (
-  <div>
-    <h1>404 Page Not Found!</h1>
-    <h2>
-      No match found for <code>{location.pathname}</code>
-    </h2>
-  </div>
+// const NotFoundPage = ({ location }) => (
+//   <div>
+//     <h2>404 Page Not Found!</h2>
+//     <h2>
+//       No match found for <code>{location.pathname}</code>
+//     </h2>
+//   </div>
+// );
+
+const HomePage = () => (
+  <React.Fragment>
+    <Route path="/" component={Login} />
+  </React.Fragment>
 );
 
 const DefaultContainer = () => (
   <React.Fragment>
     <Header />
     <Switch>
-      <Route exact path="/dashboard" component={Dashboard} />
+      {/* <Route component={NotFoundPage} /> */}
+      {/* <Route exact path="/dashboard" component={Dashboard} /> */}
+      <PrivateRoute exact path="/dashboard" component={Dashboard} />
+      <PrivateRoute exact path="/create-profile" component={CreateProfile} />
       <Route exact path="/inventory/receive-stock" component={Inventory} />
       <Route path="/items/view/items" exact component={ViewItems} />
       <Route path="/items/add/item" exact component={AddItem} />
@@ -102,14 +114,9 @@ const DefaultContainer = () => (
         component={ViewCategories}
         exact
       />
-      <Route extact path="/reports/view/reports" component={Reports} />
-      <Route extact path="/suppliers/add/supplier" component={AddSupplier} />
-      <Route
-        extact
-        path="/suppliers/view/suppliers"
-        component={ViewSuppliers}
-      />
-      <Route component={NotFoundPage} />
+      <Route exact path="/reports/view/reports" component={Reports} />
+      <Route exact path="/suppliers/add/supplier" component={AddSupplier} />
+      <Route exact path="/suppliers/view/suppliers" component={ViewSuppliers} />
     </Switch>
   </React.Fragment>
 );

@@ -126,19 +126,19 @@ class AddItem extends Component {
     });
   };
 
-  // handleCancel = e => {
-  //   e.preventDefault();
-  //   this.props.form.resetFields();
-  // };
+  handleCancel = e => {
+    e.preventDefault();
+    this.props.form.resetFields();
+  };
 
   handleItemCategory = value => {
     this.setState({ category: value });
   };
 
   componentDidMount() {
-    if (!this.props.auth.isAuthenticated) {
-      this.props.history.push("/login");
-    }
+    // if (!this.props.auth.isAuthenticated) {
+    //   this.props.history.push("/login");
+    // }
     this.fetchCategories();
   }
 
@@ -153,7 +153,7 @@ class AddItem extends Component {
       gridGap: "10px",
       padding: "0px"
     };
-
+    const { getFieldDecorator } = this.props.form;
     const { categories } = this.state;
     return (
       <React.Fragment>
@@ -171,92 +171,113 @@ class AddItem extends Component {
           <Card title="Item Details" width="500px">
             <Form layout="horizontal" onSubmit={this.handleAddItem}>
               <SFormItem label="Item Name:">
-                <Input
-                  placeholder="Enter item name"
-                  onChange={this.handleItemName}
-                />
+                {getFieldDecorator("item", {
+                  rules: [
+                    { required: true, message: "Please enter item name." }
+                  ]
+                })(
+                  <Input
+                    placeholder="Enter item name"
+                    onChange={this.handleItemName}
+                  />
+                )}
               </SFormItem>
               <SFormItem label="Category:">
-                <Select
-                  showSearch
-                  allowClear
-                  style={{ width: "100%" }}
-                  placeholder="Select item category"
-                  onChange={this.handleItemCategory}
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    option.props.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
-                >
-                  {categories.map(category => (
-                    <Option key={category._id} value={category._id}>
-                      {category.category_name}
-                    </Option>
-                  ))}
-                </Select>
+                {getFieldDecorator("category", {})(
+                  <Select
+                    showSearch
+                    allowClear
+                    style={{ width: "100%" }}
+                    placeholder="Select item category"
+                    onChange={this.handleItemCategory}
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {categories.map(category => (
+                      <Option key={category._id} value={category._id}>
+                        {category.category_name}
+                      </Option>
+                    ))}
+                  </Select>
+                )}
               </SFormItem>
               <SFormItem label="Description:">
-                <TextArea
-                  rows={3}
-                  onChange={this.handleDescription}
-                  style={{ width: "100%", marginBottom: "0px" }}
-                />
+                {getFieldDecorator("description", {})(
+                  <TextArea
+                    rows={3}
+                    onChange={this.handleDescription}
+                    style={{ width: "100%", marginBottom: "0px" }}
+                  />
+                )}
               </SFormItem>
               <div style={umpGrid}>
                 <SFormItem label="Unit of Measure">
-                  <Input
-                    placeholder="Enter Units"
-                    onChange={this.handleUnits}
-                  />
+                  {getFieldDecorator("uom", {})(
+                    <Input
+                      placeholder="Enter Units"
+                      onChange={this.handleUnits}
+                    />
+                  )}
                 </SFormItem>
                 <div>
                   <SFormItem label="Min Stock Level">
-                    <InputNumber
-                      min={0}
-                      max={100000}
-                      defaultValue={0}
-                      onChange={this.handleMinStock}
-                    />
+                    {getFieldDecorator("min_stock", {})(
+                      <InputNumber
+                        min={0}
+                        max={100000}
+                        // defaultValue={0}
+                        onChange={this.handleMinStock}
+                      />
+                    )}
                   </SFormItem>
                 </div>
                 <div>
                   <SFormItem label="Price">
-                    <InputNumber
-                      defaultValue={1000}
-                      formatter={value =>
-                        `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                      }
-                      parser={value => value.replace(/\$\s?|(,*)/g, "")}
-                      onChange={this.handlePrice}
-                    />
+                    {getFieldDecorator("price", {})(
+                      <InputNumber
+                        min={0}
+                        formatter={value =>
+                          `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                        }
+                        parser={value => value.replace(/\$\s?|(,*)/g, "")}
+                        onChange={this.handlePrice}
+                      />
+                    )}
                   </SFormItem>
                 </div>
               </div>
               <SFormItem label="Status:">
-                <Select
-                  showSearch
-                  style={{ width: "100%" }}
-                  onChange={this.handleStatus}
-                  placeholder="Select status"
-                  optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    option.props.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
-                >
-                  <Option value="Enabled">Enabled</Option>
-                  <Option value="Disabled">Disabled</Option>
-                </Select>
+                {getFieldDecorator("status", {})(
+                  <Select
+                    showSearch
+                    allowClear
+                    style={{ width: "100%" }}
+                    onChange={this.handleStatus}
+                    placeholder="Select status"
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    <Option value="Enabled">Enabled</Option>
+                    <Option value="Disabled">Disabled</Option>
+                  </Select>
+                )}
               </SFormItem>
               <SFormItem label="Remarks:">
-                <TextArea
-                  rows={3}
-                  onChange={this.handleRemarks}
-                  style={{ width: "100%", marginBottom: "0px" }}
-                />
+                {getFieldDecorator("remarks", {})(
+                  <TextArea
+                    rows={3}
+                    onChange={this.handleRemarks}
+                    style={{ width: "100%", marginBottom: "0px" }}
+                  />
+                )}
               </SFormItem>
               <div
                 style={{
@@ -266,6 +287,13 @@ class AddItem extends Component {
                 }}
               >
                 <Button
+                  type="primary"
+                  style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
+                  onClick={this.handleAddItem}
+                >
+                  Add Item
+                </Button>
+                <Button
                   style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
                   // onClick={this.handleCancel}
                   onClick={e => {
@@ -274,13 +302,6 @@ class AddItem extends Component {
                   }}
                 >
                   Cancel
-                </Button>
-                <Button
-                  type="primary"
-                  style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
-                  onClick={this.handleAddItem}
-                >
-                  Add Item
                 </Button>
               </div>
             </Form>

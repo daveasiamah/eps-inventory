@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
+import { getCurrentProfile, deleteAccount } from "../../actions/profileActions";
 
-import { NavLink } from "react-router-dom";
-import { Col, Row } from "antd";
+import { NavLink, Link } from "react-router-dom";
+import { Col, Row, Button, Spin, Icon } from "antd";
 import styled from "styled-components";
+import MyProfileActions from "./ProfileActions";
 
 import findimage from "../../images/find.png";
 import inventoryimage from "../../images/inventory.png";
@@ -38,24 +40,32 @@ const DashCard = styled.div`
 // `;
 
 const ImageCard = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 70px;
+  height: 70px;
 `;
 
-const topColResponsiveProps = {
-  xs: 24,
-  sm: 12,
-  md: 8,
-  lg: 4,
-  xl: 4
-};
+// const topColResponsiveProps = {
+//   xs: 24,
+//   sm: 12,
+//   md: 8,
+//   lg: 4,
+//   xl: 4
+// };
 
 class Dashboard extends Component {
   _isMounted = true;
+
+  handleDeleteAccount = e => {
+    e.preventDefault();
+
+    this.props.deleteAccount();
+  };
+
   componentDidMount() {
-    if (!this.props.auth.isAuthenticated) {
-      this.props.history.push("/login");
-    }
+    // if (!this.props.auth.isAuthenticated) {
+    //   this.props.history.push("/login");
+    // }
+    this.props.getCurrentProfile();
   }
 
   componentWillUnmount() {
@@ -63,6 +73,70 @@ class Dashboard extends Component {
   }
 
   render() {
+    const { user } = this.props.auth;
+    const { profile, loading } = this.props.profile;
+
+    let dashboardContent;
+
+    if (profile === null || loading) {
+      const antIcon = (
+        <Icon type="setting" style={{ fontSize: 40, color: "skyblue" }} spin />
+      );
+
+      dashboardContent = (
+        <div>
+          <Spin indicator={antIcon} size="large" />
+        </div>
+      );
+    } else {
+      //Check if logged in user has profile data
+      if (Object.keys(profile).length > 0) {
+        dashboardContent = (
+          <div>
+            <p>
+              Welcome <Link to={`/profile/${profile.handle}`}>{user.name}</Link>
+            </p>
+            <MyProfileActions />
+
+            <div>
+              <Button
+                type="danger"
+                onClick={this.handleDeleteAccount}
+                style={{ margin: "10px 0px" }}
+              >
+                Delete Account
+              </Button>
+            </div>
+          </div>
+        );
+      } else {
+        //User if logged in but has no profile
+        dashboardContent = (
+          <React.Fragment>
+            <div
+              style={{
+                display: "flex",
+                backgroundColor: "#E6F7FF",
+                flexDirection: "column",
+                padding: "5px",
+                margin: "0px 0px 5px",
+                border: "1px solid lightblue",
+                borderRadius: "4px"
+              }}
+            >
+              <p>
+                Welcome <strong>{user.name}</strong>
+              </p>
+              <p>You have not yet setup a profile, please add some info</p>
+              <Link to="/create-profile">
+                <Button type="primary">Create Profile</Button>
+              </Link>
+            </div>
+          </React.Fragment>
+        );
+      }
+    }
+
     return (
       <React.Fragment>
         <div style={{ marginBottom: "150px" }}>
@@ -76,45 +150,50 @@ class Dashboard extends Component {
               }}
             />
           </h2>
+          {dashboardContent}
           <Row
             type="flex"
             justify="space-between"
-            style={{ padding: "10px", textAlign: "center", margin: "10px" }}
+            style={{
+              padding: "1px",
+              textAlign: "center",
+              margin: "10px"
+            }}
           >
-            <Col {...topColResponsiveProps}>
+            <Col style={{ width: "18.6666667%" }}>
               <NavLink to="/Inventory/receive-stock/" exact>
                 <DashCard>
                   <ImageCard src={inventoryimage} alt="inventoryimage" />
-                  <h2>Inventory</h2>
+                  <h3>Inventory</h3>
                 </DashCard>
               </NavLink>
             </Col>
-            <Col {...topColResponsiveProps}>
+            <Col style={{ width: "18.6666667%" }}>
               <DashCard>
                 <NavLink to="/suppliers/view/suppliers/" exact>
                   <ImageCard src={partnersimage} alt="partnersimage" />
-                  <h2> Suppliers </h2>
+                  <h3> Suppliers </h3>
                 </NavLink>
               </DashCard>
             </Col>
-            <Col {...topColResponsiveProps}>
+            <Col style={{ width: "18.6666667%" }}>
               <DashCard>
                 <NavLink exact to="/reports/view/reports/">
                   <ImageCard src={reportsimage} alt="reportsimage" />
-                  <h2> Reports</h2>
+                  <h3> Reports</h3>
                 </NavLink>
               </DashCard>
             </Col>
-            <Col {...topColResponsiveProps}>
+            <Col style={{ width: "18.6666667%" }}>
               <DashCard>
                 <ImageCard src={waybillimage} alt="waybillimage" />
-                <h2> Waybills </h2>
+                <h3> Waybills </h3>
               </DashCard>
             </Col>
-            <Col {...topColResponsiveProps}>
+            <Col style={{ width: "18.6666667%" }}>
               <DashCard>
                 <ImageCard src={findimage} alt="findimage" />
-                <h2> Find </h2>
+                <h3> Find </h3>
               </DashCard>
             </Col>
           </Row>
@@ -156,11 +235,18 @@ class Dashboard extends Component {
 }
 
 Dashboard.propTypes = {
+  getCurrentProfile: PropTypes.func.isRequired,
+  deleteAccount: PropTypes.func.isRequired,
+  profile: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
+  profile: state.profile
 });
 
-export default connect(mapStateToProps)(Dashboard);
+export default connect(
+  mapStateToProps,
+  { getCurrentProfile, deleteAccount }
+)(Dashboard);

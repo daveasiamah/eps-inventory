@@ -6,34 +6,16 @@ import "./Reports.css";
 // import styled, { css } from "styled-components";
 import ChartsMain from "../Charts/ChartsMain";
 
-// const Button = styled.button`
-//   background: transparent;
-//   border-radius: 3px;
-//   border: 2px solid palevioletred;
-//   color: palevioletred;
-//   margin: 0 1em;
-//   padding: 0.25em 1em;
-
-//   ${props =>
-//     props.primary &&
-//     css`
-//       background: palevioletred;
-//       color: white;
-//       &:hover {
-//         background: white;
-//         color: palevioletred;
-//       }
-//     `};
-// `;
-
 class Reports extends Component {
-  constructor(props) {
-    super(props);
-    this._isMounted = true;
-  }
+  // constructor(props) {
+  //   super(props);
+
+  // }
+
+  _isMounted = true;
 
   componentDidMount() {
-    if (!this.props.isAuthenticated) {
+    if (!this.props.auth.isAuthenticated) {
       this.props.history.push("/login");
     }
   }
@@ -93,7 +75,7 @@ class Reports extends Component {
             </Card>
           </Col>
         </div>
-        <ChartsMain {...this.props} />
+        <ChartsMain />
       </React.Fragment>
     );
   }

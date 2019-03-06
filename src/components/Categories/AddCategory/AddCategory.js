@@ -51,21 +51,16 @@ class AddCategory extends Component {
   }
 
   handleCancel = e => {
-    console.log(this.props.children);
+    e.preventDefault();
+    this.props.form.resetFields();
   };
 
   handleChangeStatus = e => {
-    // console.log(e);
-    let status = this.state.status;
-    status = e;
     this.setState({ status: e });
-    console.log(status);
   };
 
   handleCategoryName = e => {
-    console.log(e.target.value);
     this.setState({ category_name: e.target.value });
-    console.log(this.state.category_name);
   };
 
   handleDescriptionChange = e => {
@@ -75,8 +70,8 @@ class AddCategory extends Component {
   handleAddCategory = e => {
     e.preventDefault();
     let newCategory = { ...this.state };
-    console.log(newCategory);
-    console.log(`Here you go!: `, JSON.stringify(newCategory));
+    // console.log(newCategory);
+    // console.log(`Here you go!: `, JSON.stringify(newCategory));
 
     // Send that product created to the server
     fetch("http://localhost:5000/api/categories", {
@@ -90,8 +85,8 @@ class AddCategory extends Component {
     }).then(res => {
       res
         .json()
-        .then(data => {
-          console.log("successful" + JSON.stringify(data));
+        .then(() => {
+          // console.log("successful" + JSON.stringify(data));
           alert("Category Created Successfully!");
           // this.state.category_name = "";
         })
@@ -103,6 +98,8 @@ class AddCategory extends Component {
   };
 
   render() {
+    const { getFieldDecorator } = this.props.form;
+
     return (
       <React.Fragment>
         <h2>
@@ -119,38 +116,44 @@ class AddCategory extends Component {
           <Card title={"Category Details"} style={{ width: 400 }}>
             <Form layout="horizontal" onSubmit={this.handleAddCategory}>
               <StyledFormItem label="Category Name:">
-                <Input
-                  name="category_name"
-                  placeholder="Enter category name"
-                  onChange={this.handleCategoryName}
-                />
+                {getFieldDecorator("category", {})(
+                  <Input
+                    name="category_name"
+                    placeholder="Enter category name"
+                    onChange={this.handleCategoryName}
+                  />
+                )}
               </StyledFormItem>
               <StyledFormItem label="Status:">
-                <Select
-                  showSearch
-                  style={{ width: "100%" }}
-                  // defaultValue="Enabled"
-                  placeholder="Select a status"
-                  optionFilterProp="children"
-                  optionLabelProp="value"
-                  onChange={this.handleChangeStatus}
-                  filterOption={(input, option) =>
-                    option.props.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
-                >
-                  <Option value="Enabled">Enabled</Option>
-                  <Option value="Disabled">Disabled</Option>
-                </Select>
+                {getFieldDecorator("status", {})(
+                  <Select
+                    showSearch
+                    style={{ width: "100%" }}
+                    // defaultValue="Enabled"
+                    placeholder="Select status"
+                    optionFilterProp="children"
+                    optionLabelProp="value"
+                    onChange={this.handleChangeStatus}
+                    filterOption={(input, option) =>
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    <Option value="Enabled">Enabled</Option>
+                    <Option value="Disabled">Disabled</Option>
+                  </Select>
+                )}
               </StyledFormItem>
               <StyledFormItem label="Description:">
-                <TextArea
-                  name="description"
-                  rows={2}
-                  style={{ width: "100%", marginBottom: "0px" }}
-                  onChange={this.handleDescriptionChange}
-                />
+                {getFieldDecorator("description", {})(
+                  <TextArea
+                    name="description"
+                    rows={4}
+                    style={{ width: "100%", marginBottom: "0px" }}
+                    onChange={this.handleDescriptionChange}
+                  />
+                )}
               </StyledFormItem>
             </Form>
 

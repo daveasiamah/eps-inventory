@@ -43,43 +43,35 @@ class AddSupplier extends Component {
 
   handleCancel = e => {
     e.preventDefault();
-    console.log("This should clear the form and state");
+    this.props.form.resetFields();
   };
 
   handleStatus = value => {
-    console.log(value);
     this.setState({ status: value });
   };
 
   handleSupplierName = e => {
     this.setState({ supplier_name: e.target.value });
-    console.log(e.target.value);
   };
 
   handleRemarks = e => {
     this.setState({ remarks: e.target.value });
-    console.log(e.target.value);
   };
 
   handleCity = e => {
     this.setState({ city: e.target.value });
-    console.log(e.target.value);
   };
   handleCountry = value => {
     this.setState({ country: value });
-    console.log(value);
   };
   handleAddress = e => {
     this.setState({ address: e.target.value });
-    console.log(e.target.value);
   };
   handleEmail = e => {
     this.setState({ email: e.target.value });
-    console.log(e.target.value);
   };
   handlePhone = e => {
     this.setState({ phone: e.target.value });
-    console.log(e.target.value);
   };
 
   handleAddSupplier = e => {
@@ -114,6 +106,7 @@ class AddSupplier extends Component {
   };
 
   render() {
+    const { getFieldDecorator } = this.props.form;
     return (
       <React.Fragment>
         <h2>
@@ -132,46 +125,52 @@ class AddSupplier extends Component {
               <Row gutter={8}>
                 <Col span={12}>
                   <AntFormItem label="Company Name:">
-                    {/* {getFieldDecorator("supplier", {
-              rules: [
-                {
-                  required: true,
-                  message: "Please input the supplier's company name!"
-                }
-              ] */}
-                    {/* })( */}
-                    <Input
-                      placeholder="Enter company name"
-                      onChange={this.handleSupplierName}
-                    />
-                    {/* )} */}
+                    {getFieldDecorator("supplier_name", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please input the supplier's company name!"
+                        }
+                      ]
+                    })(
+                      <Input
+                        placeholder="Enter company name"
+                        onChange={this.handleSupplierName}
+                      />
+                    )}
                   </AntFormItem>
                 </Col>
                 <Col span={12}>
                   <AntFormItem label="Email:">
-                    <Input
-                      placeholder="company@domain.com"
-                      onChange={this.handleEmail}
-                    />
+                    {getFieldDecorator("email", {})(
+                      <Input
+                        placeholder="company@domain.com"
+                        onChange={this.handleEmail}
+                      />
+                    )}
                   </AntFormItem>
                 </Col>
               </Row>
               <Row gutter={8}>
                 <Col span={12}>
                   <AntFormItem label="Phone Number:">
-                    <Input
-                      placeholder="+000-000-000-000"
-                      onChange={this.handlePhone}
-                    />
+                    {getFieldDecorator("phone", {})(
+                      <Input
+                        placeholder="+000-000-000-000"
+                        onChange={this.handlePhone}
+                      />
+                    )}
                   </AntFormItem>
                 </Col>
                 <Col span={12}>
                   <AntFormItem label="Address:">
-                    <TextArea
-                      rows={2}
-                      style={{ width: "100%", marginBottom: "0px" }}
-                      onChange={this.handleAddress}
-                    />
+                    {getFieldDecorator("address", {})(
+                      <TextArea
+                        rows={2}
+                        style={{ width: "100%", marginBottom: "0px" }}
+                        onChange={this.handleAddress}
+                      />
+                    )}
                   </AntFormItem>
                 </Col>
               </Row>
@@ -179,62 +178,73 @@ class AddSupplier extends Component {
               <Row gutter={8}>
                 <Col span={12}>
                   <AntFormItem label="Country:">
-                    <Select
-                      style={{ width: "100%" }}
-                      showSearch
-                      optionFilterProp="children"
-                      onChange={this.handleCountry}
-                      placeholder="Select country"
-                      filterOption={(input, option) =>
-                        option.props.children
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      {countries.map(country => (
-                        <Option key={country.country} value={country.country}>
-                          {country.country}
-                        </Option>
-                      ))}
-                    </Select>
+                    {getFieldDecorator("country", {})(
+                      <Select
+                        style={{ width: "100%" }}
+                        showSearch
+                        optionFilterProp="children"
+                        onChange={this.handleCountry}
+                        placeholder="Select country"
+                        filterOption={(input, option) =>
+                          option.props.children
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        {/* <Option key="1" value="Select country">
+                          Select Country
+                        </Option> */}
+                        {countries.map(country => (
+                          <Option key={country.country} value={country.country}>
+                            {country.country}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
                   </AntFormItem>
                 </Col>
                 <Col span={12}>
                   <AntFormItem label="City:">
-                    <Input
-                      placeholder="Enter city name"
-                      onChange={this.handleCity}
-                    />
+                    {getFieldDecorator("city", {})(
+                      <Input
+                        placeholder="Enter city name"
+                        onChange={this.handleCity}
+                      />
+                    )}
                   </AntFormItem>
                 </Col>
               </Row>
               <Row gutter={8}>
                 <Col span={12}>
                   <AntFormItem label="Status:">
-                    <Select
-                      showSearch
-                      style={{ width: "100%" }}
-                      onChange={this.handleStatus}
-                      placeholder="Select status"
-                      optionFilterProp="children"
-                      filterOption={(input, option) =>
-                        option.props.children
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      <Option value="Enabled">Enabled</Option>
-                      <Option value="Disabled">Disabled</Option>
-                    </Select>
+                    {getFieldDecorator("status", {})(
+                      <Select
+                        showSearch
+                        style={{ width: "100%" }}
+                        onChange={this.handleStatus}
+                        placeholder="Select status"
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                          option.props.children
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        <Option value="Enabled">Enabled</Option>
+                        <Option value="Disabled">Disabled</Option>
+                      </Select>
+                    )}
                   </AntFormItem>
                 </Col>
                 <Col span={12}>
                   <AntFormItem label="Remarks:">
-                    <TextArea
-                      rows={2}
-                      style={{ width: "100%", marginBottom: "0px" }}
-                      onChange={this.handleRemarks}
-                    />
+                    {getFieldDecorator("remarks", {})(
+                      <TextArea
+                        rows={2}
+                        style={{ width: "100%", marginBottom: "0px" }}
+                        onChange={this.handleRemarks}
+                      />
+                    )}
                   </AntFormItem>
                 </Col>
               </Row>
@@ -267,6 +277,8 @@ class AddSupplier extends Component {
   }
 }
 
+const NewSupplier = Form.create({ name: "supplier" })(AddSupplier);
+
 AddSupplier.propTypes = {
   auth: PropTypes.object.isRequired
 };
@@ -274,4 +286,4 @@ AddSupplier.propTypes = {
 const mapStateToProps = state => ({
   auth: state.auth
 });
-export default connect(mapStateToProps)(AddSupplier);
+export default connect(mapStateToProps)(NewSupplier);

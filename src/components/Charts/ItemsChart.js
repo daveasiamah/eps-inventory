@@ -28,7 +28,7 @@ class ItemsChart extends Component {
     },
     series: [
       {
-        name: "prices",
+        name: "price",
         data: []
       }
     ]

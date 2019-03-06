@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
+import axios from "axios";
 
 class CategoriesChart extends Component {
   constructor(props) {
@@ -9,9 +10,9 @@ class CategoriesChart extends Component {
       options: {
         dataLabels: { enabled: true },
         title: {
-          text: "Categories In Stock Year To Date",
+          text: "Categories In Stock",
           align: "center",
-          margin: 20,
+          margin: 0,
           offsetY: 0,
           style: {
             fontFamily: "calibri",
@@ -27,7 +28,50 @@ class CategoriesChart extends Component {
 
   _isMounted = true;
 
-  componentDidMount() {}
+  componentDidMount() {
+    axios
+      .get(`http://localhost:5000/api/items`)
+      .then(items => {
+        const Items = items.data;
+
+        const ItemNames = Items.map(item => item.item_name);
+
+        const ItemPrice = Items.map(item => item.price);
+        if (this._isMounted) {
+          this.setState({
+            options: {
+              ...this.state.options,
+              xaxis: {
+                ...this.state.options.xaxis,
+                ...this.state.options.xaxis.categories,
+                categories: ItemNames
+              },
+              responsive: [
+                {
+                  breakpoint: 480,
+                  options: {
+                    chart: {
+                      width: 200
+                    }
+                  }
+                }
+              ]
+            }
+          });
+
+          this.setState({
+            series: [
+              {
+                ...this.state.series[0],
+                data: ItemPrice
+              }
+            ]
+          });
+        }
+        // console.log(this.state.series);
+      })
+      .catch(error => console.log(error));
+  }
 
   componentWillUnmount() {
     this._isMounted = false;
@@ -35,14 +79,14 @@ class CategoriesChart extends Component {
 
   render() {
     return (
-      <div className="donut" style={{ objectFit: "fill", padding: "5px" }}>
+      <div className="donut" style={{ objectFit: "fill", padding: "25px" }}>
         <Chart
           options={this.state.options}
           series={this.state.series}
           labels={this.state.labels}
           type="pie"
           width="100%"
-          height="450"
+          height="500px"
         />
       </div>
     );

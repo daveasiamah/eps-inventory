@@ -8,6 +8,8 @@ import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
+import { clearCurrentProfile } from "../../actions/profileActions";
+
 import styled from "styled-components";
 // import MenuItem from "antd/lib/menu/MenuItem";
 // import Login from "../Login/Login";
@@ -22,7 +24,7 @@ const MenuItemGroup = Menu.ItemGroup;
 class Header extends React.Component {
   handleLogout = e => {
     e.preventDefault();
-
+    this.props.clearCurrentProfile();
     this.props.logoutUser();
     this.props.history.push("/login");
   };
@@ -211,8 +213,8 @@ class Header extends React.Component {
               }
             >
               <MenuItemGroup>
-                <Menu.Item key="report">
-                  <NavLink to="/Reports/view/reports/" exact>
+                <Menu.Item key="reports">
+                  <NavLink to="/reports/view/reports/" exact>
                     <span>
                       <Icon type="bar-chart" />
                       View Reports
@@ -223,7 +225,7 @@ class Header extends React.Component {
             </SubMenu>
             <Menu.Item key="about">
               <NavLink
-                to="//github.com/daveasiamah/"
+                to="//github.com/daveasiamah/ims-pos/issues"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -303,5 +305,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { logoutUser }
+  { logoutUser, clearCurrentProfile }
 )(withRouter(Header));
