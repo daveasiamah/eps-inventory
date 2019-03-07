@@ -64,8 +64,14 @@ class Login extends Component {
         console.log(`Success!`);
       }
     } else {
-      console.log(this.props);
-      console.log("Please fill all fields!");
+      if (isEmpty(this.state.email || this.state.password)) {
+        this.setState({ errors: "Please fill all fields." });
+        console.log("Please fill all fields!!!");
+      }
+      let errors = this.props.errors;
+      this.setState({ errors: errors });
+      // console.log("Please fill all fields!");
+      console.log(this.state.errors);
     }
   };
 
@@ -78,8 +84,11 @@ class Login extends Component {
   };
 
   render() {
-    const { errors } = this.state;
+    // const { errors } = this.state;
+    // console.log(this.props.errors);
+    // console.log(this.state);
     const { getFieldDecorator } = this.props.form;
+
     return (
       <React.Fragment>
         <LoginPage>
@@ -98,11 +107,12 @@ class Login extends Component {
           >
             <h1 style={{ textAlign: "center" }}>Login EPS-IMS</h1>
             <Form onSubmit={this.handleLogin} className="login-form">
-              {errors[2] ? (
+              {Object.values(this.props.errors) ? (
                 <div style={{ color: "red", textAlign: "center" }}>
-                  {errors}
+                  {Object.values(this.props.errors)}
                 </div>
               ) : null}
+
               <FormItem label="Email">
                 {getFieldDecorator("email", {
                   rules: [

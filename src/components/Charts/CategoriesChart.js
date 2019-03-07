@@ -21,8 +21,8 @@ class CategoriesChart extends Component {
           }
         }
       },
-      series: [44, 55, 41, 17, 15],
-      labels: ["Apple", "Mango", "Banana", "Papaya", "Orange"]
+      series: [],
+      labels: []
     };
   }
 
@@ -39,33 +39,11 @@ class CategoriesChart extends Component {
         const ItemPrice = Items.map(item => item.price);
         if (this._isMounted) {
           this.setState({
-            options: {
-              ...this.state.options,
-              xaxis: {
-                ...this.state.options.xaxis,
-                ...this.state.options.xaxis.categories,
-                categories: ItemNames
-              },
-              responsive: [
-                {
-                  breakpoint: 480,
-                  options: {
-                    chart: {
-                      width: 200
-                    }
-                  }
-                }
-              ]
-            }
+            series: ItemPrice
           });
 
           this.setState({
-            series: [
-              {
-                ...this.state.series[0],
-                data: ItemPrice
-              }
-            ]
+            labels: ItemNames
           });
         }
         // console.log(this.state.series);
@@ -79,12 +57,12 @@ class CategoriesChart extends Component {
 
   render() {
     return (
-      <div className="donut" style={{ objectFit: "fill", padding: "25px" }}>
+      <div className="pie" style={{ objectFit: "fill", padding: "25px" }}>
         <Chart
           options={this.state.options}
           series={this.state.series}
           labels={this.state.labels}
-          type="pie"
+          type="donut"
           width="100%"
           height="500px"
         />

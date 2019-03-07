@@ -60,7 +60,7 @@ class ItemsChart extends Component {
           this.setState({
             series: [
               {
-                ...this.state.series[0],
+                ...this.state.series,
                 data: ItemPrice
               }
             ]

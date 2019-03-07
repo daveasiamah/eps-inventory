@@ -34,9 +34,10 @@ class Profile extends Component {
   };
 
   componentDidMount() {
-    if (!this.props.auth.isAuthenticated) {
-      this.props.history.push("/login");
-    }
+    // if (!this.props.auth.isAuthenticated) {
+    //   this.props.history.push("/login");
+    // }
+    // console.log(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -51,7 +52,7 @@ class Profile extends Component {
     const { handle, company, website, location, status } = this.state;
     if (!handle) {
       this.setState({ errors: this.props.errors });
-      console.log(this.state.errors);
+      // console.log(this.state.errors);
       return;
     } else {
       let profileData = { handle, company, website, location, status };
@@ -63,25 +64,20 @@ class Profile extends Component {
   };
 
   handleUserHandle = e => {
-    console.log(e.target.value);
     this.setState({ handle: e.target.value });
   };
 
   handleCompany = e => {
-    console.log(e.target.value);
     this.setState({ company: e.target.value });
   };
 
   handleWebsite = e => {
-    console.log(e.target.value);
     this.setState({ website: e.target.value });
   };
   handleLocation = e => {
-    console.log(e.target.value);
     this.setState({ location: e.target.value });
   };
   handleStatus = value => {
-    console.log(value);
     this.setState({ status: value });
   };
 
@@ -90,12 +86,12 @@ class Profile extends Component {
   };
 
   render() {
-    const { errors } = this.state;
+    // const { errors } = this.state;
     const { getFieldDecorator } = this.props.form;
 
     return (
       <ProfilePage>
-        <div>{errors[0]}</div>
+        {/* <div>{this.state.errors}</div> */}
         <Card
           bordered={true}
           style={{
@@ -252,6 +248,7 @@ Profile.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  auth: state.auth,
   profile: state.profile,
   errors: state.errors
 });

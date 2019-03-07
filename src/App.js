@@ -9,7 +9,8 @@ import { clearCurrentProfile } from "./actions/profileActions";
 
 import "antd/dist/antd.min.css";
 import PrivateRoute from "./common/PrivateRoutes/PrivateRoute";
-import CreateProfile from "./components/Create-Profile/CreateProfile";
+import CreateProfile from "./components/CreateProfile/CreateProfile";
+import EditProfile from "./components/EditProfile/EditProfile";
 import AddCategory from "./components/Categories/AddCategory/AddCategory";
 import ViewCategories from "./components/Categories/ViewCategories/ViewCategories";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -105,6 +106,7 @@ const DefaultContainer = () => (
       {/* <Route exact path="/dashboard" component={Dashboard} /> */}
       <PrivateRoute exact path="/dashboard" component={Dashboard} />
       <PrivateRoute exact path="/create-profile" component={CreateProfile} />
+      <PrivateRoute exact path="/edit-profile" component={EditProfile} />
       <Route exact path="/inventory/receive-stock" component={Inventory} />
       <Route path="/items/view/items" exact component={ViewItems} />
       <Route path="/items/add/item" exact component={AddItem} />

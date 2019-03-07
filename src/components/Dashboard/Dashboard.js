@@ -53,6 +53,12 @@ const ImageCard = styled.img`
 // };
 
 class Dashboard extends Component {
+  constructor() {
+    super();
+    this.state = {
+      errors: false
+    };
+  }
   _isMounted = true;
 
   handleDeleteAccount = e => {
@@ -90,7 +96,7 @@ class Dashboard extends Component {
       );
     } else {
       //Check if logged in user has profile data
-      if (Object.keys(profile).length > 0) {
+      if (Object.keys(profile).length > 1) {
         dashboardContent = (
           <div>
             <p>
@@ -111,32 +117,33 @@ class Dashboard extends Component {
         );
       } else {
         //User if logged in but has no profile
-        dashboardContent = (
-          <React.Fragment>
-            <div
-              style={{
-                display: "flex",
-                backgroundColor: "#E6F7FF",
-                flexDirection: "column",
-                padding: "5px",
-                margin: "0px 0px 5px",
-                border: "1px solid lightblue",
-                borderRadius: "4px"
-              }}
-            >
-              <p>
-                Welcome <strong>{user.name}</strong>
-              </p>
-              <p>You have not yet setup a profile, please add some info</p>
-              <Link to="/create-profile">
-                <Button type="primary">Create Profile</Button>
-              </Link>
-            </div>
-          </React.Fragment>
-        );
+        if (Object.keys(profile).length === 1) {
+          dashboardContent = (
+            <React.Fragment>
+              <div
+                style={{
+                  display: "flex",
+                  backgroundColor: "#E6F7FF",
+                  flexDirection: "column",
+                  padding: "5px",
+                  margin: "0px 0px 5px",
+                  border: "1px solid lightblue",
+                  borderRadius: "4px"
+                }}
+              >
+                <p>
+                  Welcome <strong>{user.name}</strong>
+                </p>
+                <p>You have not yet setup a profile, please add some info.</p>
+                <Link to="/create-profile">
+                  <Button type="primary">Create Profile</Button>
+                </Link>
+              </div>
+            </React.Fragment>
+          );
+        }
       }
     }
-
     return (
       <React.Fragment>
         <div style={{ marginBottom: "150px" }}>
@@ -151,6 +158,7 @@ class Dashboard extends Component {
             />
           </h2>
           {dashboardContent}
+
           <Row
             type="flex"
             justify="space-between"
