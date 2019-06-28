@@ -4,7 +4,7 @@ import { loginUser } from "../../actions/authActions";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Form, Icon, Input, Button, Card } from "antd";
-// import axios from "axios";
+
 import bgImage from "./login-bg3.jpeg";
 import isEmpty from "../../validation/is-empty";
 
@@ -18,7 +18,6 @@ const LoginPage = styled.div`
   justify-items: center;
   padding: 100px 0 50px;
   padding-bottom: 315px;
-  /* padding-top: 315px; */
   z-index: -1;
   background: no-repeat center/ 100% 100% url(${bgImage});
 `;

@@ -4,6 +4,9 @@ import { PropTypes } from "prop-types";
 import { Col, Card, Form } from "antd";
 import "./Reports.css";
 // import styled, { css } from "styled-components";
+//importing report component from jsreports
+import jsreports from "../../common/JSReports/jsreports/jsreports-all.min";
+
 import ChartsMain from "../Charts/ChartsMain";
 
 class Reports extends Component {

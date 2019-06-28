@@ -146,7 +146,13 @@ class Dashboard extends Component {
     }
     return (
       <React.Fragment>
-        <div style={{ marginBottom: "150px" }}>
+        <div
+          style={{
+            marginBottom: "150px",
+            paddingLeft: "10px",
+            paddingRight: "10px"
+          }}
+        >
           <h2>
             Dashboard
             <hr

@@ -64,7 +64,13 @@ class ViewSuppliers extends Component {
   render() {
     return (
       <React.Fragment>
-        <div style={{ marginBottom: "100px" }}>
+        <div
+          style={{
+            marginBottom: "100px",
+            marginLeft: "10px",
+            marginRight: "10px"
+          }}
+        >
           <h2>
             Suppliers List
             <hr

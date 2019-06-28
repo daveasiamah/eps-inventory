@@ -13,9 +13,11 @@ import {
   InputNumber,
   DatePicker,
   Table,
+  Divider,
   Icon
 } from "antd";
 import styled from "styled-components";
+import moment from "react-moment";
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -50,6 +52,8 @@ const InvWrapper = styled.div`
   display: grid;
   grid-gap: 20px;
   margin-bottom: 100px;
+  padding-left: 10px;
+  padding-right: 10px;
 `;
 
 class Inventory extends Component {
@@ -201,13 +205,14 @@ class Inventory extends Component {
   handleItemSelect = itemId => {
     let Items = this.state.items;
     //Search for the current item in state
-    let newItem = Items.filter(itemById => itemById._id === itemId);
+    let currentItem = Items.filter(itemById => itemById._id === itemId);
     this.setState({
-      selectedItem: newItem
+      selectedItem: currentItem
     });
-    // console.log("The selected Item is: " + JSON.stringify(newItem));
+    // console.log("The selected Item is: " + JSON.stringify(currentItem));
+
     //Map items to get selected values
-    newItem.map(item =>
+    currentItem.map(item =>
       this.setState({
         item_name: item.item_name,
         category: item.category.category_name,
@@ -241,11 +246,9 @@ class Inventory extends Component {
     fetch(`http://localhost:5000/api/suppliers`, { method: "GET" })
       .then(response => response.json())
       .then(suppliers => {
-        // console.log(suppliers);
         if (this._isMounted) {
           this.setState({ loading: false, suppliers: suppliers });
         }
-        // console.log(this.state.suppliers);
       })
       .catch(err => console.log(err));
   };
@@ -255,11 +258,9 @@ class Inventory extends Component {
     fetch(`http://localhost:5000/api/inventory`, { method: "GET" })
       .then(response => response.json())
       .then(inventory => {
-        // console.log(inventory);
         if (this._isMounted) {
           this.setState({ loading: false, inventory: inventory });
         }
-        // console.log(this.state.inventory);
       })
       .catch(err => console.log(err));
   };
@@ -273,6 +274,7 @@ class Inventory extends Component {
 
     this.fetchItems({
       results: pagination.pageSize,
+      position: pagination.position,
       page: pagination.current,
       sortField: sorter.field,
       sortOrder: sorter.order
@@ -292,6 +294,7 @@ class Inventory extends Component {
   }
 
   render() {
+    const { getFieldDecorator } = this.props.form;
     return (
       <React.Fragment>
         <InvWrapper>
@@ -313,33 +316,35 @@ class Inventory extends Component {
             >
               <StyledFormItem>
                 <FormItem label="Item Name:">
-                  <Select
-                    showSearch
-                    autoFocus="true"
-                    style={{ width: "100%" }}
-                    placeholder="Select Item"
-                    optionFilterProp="children"
-                    onChange={this.handleItemSelect}
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    {this.state.items.map(item => (
-                      <Option key={item._id} value={item._id}>
-                        {item.item_name}
-                      </Option>
-                    ))}
-                  </Select>
+                  {getFieldDecorator("item")(
+                    <Select
+                      showSearch
+                      autoFocus="true"
+                      style={{ width: "100%" }}
+                      placeholder="Select Item"
+                      optionFilterProp="children"
+                      onChange={this.handleItemSelect}
+                      filterOption={(input, option) =>
+                        option.props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      {this.state.items.map(item => (
+                        <Option key={item._id} value={item._id}>
+                          {item.item_name}
+                        </Option>
+                      ))}
+                    </Select>
+                  )}
                 </FormItem>
-                <FormItem label="Category:">
+                <FormItem label="Category">
                   <Input value={this.state.category} readOnly />
                 </FormItem>
-                <FormItem label="Status:">
+                <FormItem label="Status">
                   <Input value={this.state.status} readOnly />
                 </FormItem>
-                <FormItem label="Description:">
+                <FormItem label="Description">
                   <TextArea
                     rows={3}
                     style={{ width: "100%", marginBottom: "5px" }}
@@ -352,11 +357,7 @@ class Inventory extends Component {
                 <div>
                   <StyledFormItem>
                     <FormItem label="Min Stock Level" style={{ width: "100%" }}>
-                      <Input
-                        value={this.state.min_stock}
-                        readOnly
-                        // onChange={console.log("mins stock")}
-                      />
+                      <Input value={this.state.min_stock} readOnly />
                     </FormItem>
                   </StyledFormItem>
                 </div>
@@ -374,8 +375,6 @@ class Inventory extends Component {
               </ItemGrid>
             </StyledCard>
 
-            {/* Entering additional information */}
-
             <StyledCard
               title="Receipt Details"
               bordered={true}
@@ -383,82 +382,95 @@ class Inventory extends Component {
             >
               <StyledFormItem>
                 <FormItem label="Transaction Type:">
-                  <Select
-                    showSearch
-                    placeholder="Select transaction type"
-                    optionFilterProp="children"
-                    onChange={this.handleTransactionType}
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                    style={{ width: "100%" }}
-                  >
-                    <Option value="Receipt">Receipt</Option>
-                    <Option value="Issue">Issue/Delivery</Option>
-                  </Select>
+                  {getFieldDecorator("receipt")(
+                    <Select
+                      showSearch
+                      placeholder="Select transaction type"
+                      optionFilterProp="children"
+                      onChange={this.handleTransactionType}
+                      filterOption={(input, option) =>
+                        option.props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                      style={{ width: "100%" }}
+                    >
+                      <Option value="Receipt">Receipt</Option>
+                      <Option value="Issue">Issue/Delivery</Option>
+                    </Select>
+                  )}
                 </FormItem>
                 <FormItem label="Purchase Type:">
-                  <Select
-                    showSearch
-                    placeholder="Select purchase type"
-                    optionFilterProp="children"
-                    style={{ width: "100%" }}
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                    onChange={this.handlePurchaseType}
-                  >
-                    <Option value="Foreign">Foreign</Option>
-                    <Option value="Local">Local</Option>
-                  </Select>
+                  {getFieldDecorator("ptype")(
+                    <Select
+                      showSearch
+                      placeholder="Select purchase type"
+                      optionFilterProp="children"
+                      style={{ width: "100%" }}
+                      filterOption={(input, option) =>
+                        option.props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                      onChange={this.handlePurchaseType}
+                    >
+                      <Option value="Foreign">Foreign</Option>
+                      <Option value="Local">Local</Option>
+                    </Select>
+                  )}
                 </FormItem>
                 <FormItem label="Supplier:">
-                  <Select
-                    showSearch
-                    style={{ width: "100%" }}
-                    placeholder="Select supplier"
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                    onChange={this.handleSupplier}
-                  >
-                    {this.state.suppliers.map(supplier => (
-                      <Option key={supplier._id} value={supplier.supplier_name}>
-                        {supplier.supplier_name}
-                      </Option>
-                    ))}
-                  </Select>
+                  {getFieldDecorator("supplier")(
+                    <Select
+                      showSearch
+                      style={{ width: "100%" }}
+                      placeholder="Select supplier"
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option.props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                      onChange={this.handleSupplier}
+                    >
+                      {this.state.suppliers.map(supplier => (
+                        <Option
+                          key={supplier._id}
+                          value={supplier.supplier_name}
+                        >
+                          {supplier.supplier_name}
+                        </Option>
+                      ))}
+                    </Select>
+                  )}
                 </FormItem>
                 <FormItem label="Location(Warehouse):">
-                  <Select
-                    showSearch
-                    style={{ width: "100%" }}
-                    placeholder="Select Location"
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                    onChange={this.handleLocation}
-                  >
-                    <Option value="Tema">Tema</Option>
-                    <Option value="Tarkwa">Tarkwa</Option>
-                  </Select>
+                  {getFieldDecorator("location")(
+                    <Select
+                      showSearch
+                      style={{ width: "100%" }}
+                      placeholder="Select Location"
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option.props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                      onChange={this.handleLocation}
+                    >
+                      <Option value="Tema">Tema</Option>
+                      <Option value="Tarkwa">Tarkwa</Option>
+                    </Select>
+                  )}
                 </FormItem>
                 <FormItem label="Remarks:">
-                  <TextArea
-                    rows={3}
-                    style={{ width: "100%", marginBottom: "5px" }}
-                    onChange={this.handleRemarks}
-                  />
+                  {getFieldDecorator("remarks")(
+                    <TextArea
+                      rows={3}
+                      style={{ width: "100%", marginBottom: "5px" }}
+                      onChange={this.handleRemarks}
+                    />
+                  )}
                 </FormItem>
               </StyledFormItem>
             </StyledCard>
@@ -470,21 +482,23 @@ class Inventory extends Component {
             >
               <StyledFormItem>
                 <FormItem label="Waybill Number:">
-                  <Input
-                    placeholder="Enter waybill number"
-                    onChange={this.handleWaybill}
-                  />
+                  {getFieldDecorator("waybill number")(
+                    <Input
+                      placeholder="Enter waybill number"
+                      onChange={this.handleWaybill}
+                    />
+                  )}
                 </FormItem>
                 <FormItem label="Part Number:">
-                  <Input
-                    placeholder="Enter part number"
-                    onChange={this.handlePartNumber}
-                  />
+                  {getFieldDecorator("part number")(
+                    <Input
+                      placeholder="Enter part number"
+                      onChange={this.handlePartNumber}
+                    />
+                  )}
                 </FormItem>
                 <FormItem>
                   <Checkbox onChange={this.handleChecked}>Has Expiry?</Checkbox>
-                  {/* Research how to disable or enable form controls using checkbox in React */}
-                  {/* Edit: Done */}
                 </FormItem>
                 <FormItem label="Date of Manufacture:">
                   <DatePicker
@@ -503,20 +517,25 @@ class Inventory extends Component {
                   />
                 </FormItem>
                 <FormItem label="Quantity to Add:">
-                  <InputNumber
-                    size="large"
-                    min={0}
-                    max={100000}
-                    defaultValue={0}
-                    onChange={this.handleQuantity}
-                    style={{
-                      width: "100%",
-                      fontFamily: "verdana",
-                      fontWeight: "900",
-                      fontSize: "1.5rem",
-                      lineHeight: "1.5rem"
-                    }}
-                  />
+                  {getFieldDecorator("quantity", {
+                    required: true,
+                    message: "Please enter quantity"
+                  })(
+                    <InputNumber
+                      size="large"
+                      min={0}
+                      max={100000}
+                      // defaultValue={0}
+                      onChange={this.handleQuantity}
+                      style={{
+                        width: "100%",
+                        fontFamily: "verdana",
+                        fontWeight: "900",
+                        fontSize: "1.5rem",
+                        lineHeight: "1.5rem"
+                      }}
+                    />
+                  )}
                 </FormItem>
               </StyledFormItem>
             </StyledCard>
@@ -618,12 +637,12 @@ const columns = [
   {
     title: "Item Name",
     dataIndex: "item_name",
-    // filters: [
-    //   { text: "Male", value: "male" },
-    //   { text: "Female", value: "female" }
-    // ],
-    // sorter: true,
-    // render: name => `${name.item_name}`
+    filters: [
+      { text: "Male", value: "male" },
+      { text: "Female", value: "female" }
+    ],
+    sorter: true,
+    // render: item_name => `${item_name.item_name}`,
     width: "15%"
   },
   {
@@ -634,7 +653,6 @@ const columns = [
   {
     title: "Category",
     dataIndex: "category",
-
     width: "10%"
   },
   {
@@ -650,6 +668,11 @@ const columns = [
   {
     title: "Status",
     dataIndex: "status",
+    filters: [
+      { text: "Enabled", value: "enabled" },
+      { text: "Disabled", value: "disabled" }
+    ],
+    sorter: true,
     width: "9%"
   },
   {
@@ -662,6 +685,12 @@ const columns = [
     title: "Date Updated",
     dataIndex: "updatedAt",
     width: "9%"
+    // render: () => (
+    //   <span>
+    //     <a href="*">{new Date("updatedAt").format("MMDDYYYY")}</a>
+    //     <Divider type="vertical" />
+    //   </span>
+    // )
   },
   {
     title: "Date Created",

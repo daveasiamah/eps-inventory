@@ -61,7 +61,13 @@ class ViewItems extends Component {
   render() {
     return (
       <React.Fragment>
-        <div style={{ marginBottom: "100px" }}>
+        <div
+          style={{
+            marginBottom: "100px",
+            paddingLeft: "10px",
+            paddingRight: "10px"
+          }}
+        >
           <h2>
             Items List
             <hr

@@ -18,6 +18,8 @@ const Wrapper = styled.div`
   align-items: center;
   flex-wrap: wrap;
   margin-bottom: 100px;
+  padding-left: 10px;
+  padding-right: 10px;
 `;
 
 class AddItem extends Component {
@@ -157,156 +159,158 @@ class AddItem extends Component {
     const { categories } = this.state;
     return (
       <React.Fragment>
-        <h2>
-          Add New Item
-          <hr
-            style={{
-              backgroundColor: "#dedede",
-              border: "none",
-              height: "1px"
-            }}
-          />
-        </h2>
-        <Wrapper>
-          <Card title="Item Details" width="500px">
-            <Form layout="horizontal" onSubmit={this.handleAddItem}>
-              <SFormItem label="Item Name:">
-                {getFieldDecorator("item", {
-                  rules: [
-                    { required: true, message: "Please enter item name." }
-                  ]
-                })(
-                  <Input
-                    placeholder="Enter item name"
-                    onChange={this.handleItemName}
-                  />
-                )}
-              </SFormItem>
-              <SFormItem label="Category:">
-                {getFieldDecorator("category", {})(
-                  <Select
-                    showSearch
-                    allowClear
-                    style={{ width: "100%" }}
-                    placeholder="Select item category"
-                    onChange={this.handleItemCategory}
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    {categories.map(category => (
-                      <Option key={category._id} value={category._id}>
-                        {category.category_name}
-                      </Option>
-                    ))}
-                  </Select>
-                )}
-              </SFormItem>
-              <SFormItem label="Description:">
-                {getFieldDecorator("description", {})(
-                  <TextArea
-                    rows={3}
-                    onChange={this.handleDescription}
-                    style={{ width: "100%", marginBottom: "0px" }}
-                  />
-                )}
-              </SFormItem>
-              <div style={umpGrid}>
-                <SFormItem label="Unit of Measure">
-                  {getFieldDecorator("uom", {})(
+        <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+          <h2>
+            Add New Item
+            <hr
+              style={{
+                backgroundColor: "#dedede",
+                border: "none",
+                height: "1px"
+              }}
+            />
+          </h2>
+          <Wrapper>
+            <Card title="Item Details" width="500px">
+              <Form layout="horizontal" onSubmit={this.handleAddItem}>
+                <SFormItem label="Item Name:">
+                  {getFieldDecorator("item", {
+                    rules: [
+                      { required: true, message: "Please enter item name." }
+                    ]
+                  })(
                     <Input
-                      placeholder="Enter Units"
-                      onChange={this.handleUnits}
+                      placeholder="Enter item name"
+                      onChange={this.handleItemName}
                     />
                   )}
                 </SFormItem>
-                <div>
-                  <SFormItem label="Min Stock Level">
-                    {getFieldDecorator("min_stock", {})(
-                      <InputNumber
-                        min={0}
-                        max={100000}
-                        // defaultValue={0}
-                        onChange={this.handleMinStock}
+                <SFormItem label="Category:">
+                  {getFieldDecorator("category", {})(
+                    <Select
+                      showSearch
+                      allowClear
+                      style={{ width: "100%" }}
+                      placeholder="Select item category"
+                      onChange={this.handleItemCategory}
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option.props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      {categories.map(category => (
+                        <Option key={category._id} value={category._id}>
+                          {category.category_name}
+                        </Option>
+                      ))}
+                    </Select>
+                  )}
+                </SFormItem>
+                <SFormItem label="Description:">
+                  {getFieldDecorator("description", {})(
+                    <TextArea
+                      rows={3}
+                      onChange={this.handleDescription}
+                      style={{ width: "100%", marginBottom: "0px" }}
+                    />
+                  )}
+                </SFormItem>
+                <div style={umpGrid}>
+                  <SFormItem label="Unit of Measure">
+                    {getFieldDecorator("uom", {})(
+                      <Input
+                        placeholder="Enter Units"
+                        onChange={this.handleUnits}
                       />
                     )}
                   </SFormItem>
+                  <div>
+                    <SFormItem label="Min Stock Level">
+                      {getFieldDecorator("min_stock", {})(
+                        <InputNumber
+                          min={0}
+                          max={100000}
+                          // defaultValue={0}
+                          onChange={this.handleMinStock}
+                        />
+                      )}
+                    </SFormItem>
+                  </div>
+                  <div>
+                    <SFormItem label="Price">
+                      {getFieldDecorator("price", {})(
+                        <InputNumber
+                          min={0}
+                          formatter={value =>
+                            `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                          }
+                          parser={value => value.replace(/\$\s?|(,*)/g, "")}
+                          onChange={this.handlePrice}
+                        />
+                      )}
+                    </SFormItem>
+                  </div>
                 </div>
-                <div>
-                  <SFormItem label="Price">
-                    {getFieldDecorator("price", {})(
-                      <InputNumber
-                        min={0}
-                        formatter={value =>
-                          `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                        }
-                        parser={value => value.replace(/\$\s?|(,*)/g, "")}
-                        onChange={this.handlePrice}
-                      />
-                    )}
-                  </SFormItem>
-                </div>
-              </div>
-              <SFormItem label="Status:">
-                {getFieldDecorator("status", {})(
-                  <Select
-                    showSearch
-                    allowClear
-                    style={{ width: "100%" }}
-                    onChange={this.handleStatus}
-                    placeholder="Select status"
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    <Option value="Enabled">Enabled</Option>
-                    <Option value="Disabled">Disabled</Option>
-                  </Select>
-                )}
-              </SFormItem>
-              <SFormItem label="Remarks:">
-                {getFieldDecorator("remarks", {})(
-                  <TextArea
-                    rows={3}
-                    onChange={this.handleRemarks}
-                    style={{ width: "100%", marginBottom: "0px" }}
-                  />
-                )}
-              </SFormItem>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "flex-end"
-                }}
-              >
-                <Button
-                  type="primary"
-                  style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
-                  onClick={this.handleAddItem}
-                >
-                  Add Item
-                </Button>
-                <Button
-                  style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
-                  // onClick={this.handleCancel}
-                  onClick={e => {
-                    e.preventDefault();
-                    this.props.form.resetFields();
+                <SFormItem label="Status:">
+                  {getFieldDecorator("status", {})(
+                    <Select
+                      showSearch
+                      allowClear
+                      style={{ width: "100%" }}
+                      onChange={this.handleStatus}
+                      placeholder="Select status"
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option.props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      <Option value="Enabled">Enabled</Option>
+                      <Option value="Disabled">Disabled</Option>
+                    </Select>
+                  )}
+                </SFormItem>
+                <SFormItem label="Remarks:">
+                  {getFieldDecorator("remarks", {})(
+                    <TextArea
+                      rows={3}
+                      onChange={this.handleRemarks}
+                      style={{ width: "100%", marginBottom: "0px" }}
+                    />
+                  )}
+                </SFormItem>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "flex-end"
                   }}
                 >
-                  Cancel
-                </Button>
-              </div>
-            </Form>
-          </Card>
-        </Wrapper>
+                  <Button
+                    type="primary"
+                    style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
+                    onClick={this.handleAddItem}
+                  >
+                    Add Item
+                  </Button>
+                  <Button
+                    style={{ padding: "5px 10px", margin: "10px 0px 5px 5px" }}
+                    // onClick={this.handleCancel}
+                    onClick={e => {
+                      e.preventDefault();
+                      this.props.form.resetFields();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </Form>
+            </Card>
+          </Wrapper>
+        </div>
       </React.Fragment>
     );
   }

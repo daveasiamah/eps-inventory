@@ -34,7 +34,9 @@ class Header extends React.Component {
     // console.log(this.props);
     return (
       <React.Fragment>
-        <h2>EPS-Inventory Management System v1.0</h2>
+        <h2 style={{ paddingLeft: "10px" }}>
+          EPS-Inventory Management System v1.0
+        </h2>
         <div style={{ display: "flex", flexWrap: "nowrap" }}>
           <StyledMenu mode="horizontal" theme="light">
             <SubMenu
@@ -254,10 +256,10 @@ class Header extends React.Component {
                             backgroundColor: "#40A9FF",
                             verticalAlign: "middle",
                             // fontWeight: "bold",
-                            fontSize: "2rem"
+                            fontSize: "1.5rem"
                           }}
                           size="large"
-                          shape="circle"
+                          shape="square"
                         >
                           {user.name.slice(0, 1)}
                           {/* {user.name.split(" ")[0]} */}

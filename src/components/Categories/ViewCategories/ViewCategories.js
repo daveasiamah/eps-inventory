@@ -76,7 +76,13 @@ class ViewCategories extends Component {
     // console.table(this.state.data);
     return (
       <React.Fragment>
-        <div style={{ marginBottom: "100px" }}>
+        <div
+          style={{
+            marginBottom: "100px",
+            paddingLeft: "10px",
+            paddingRight: "10px"
+          }}
+        >
           <h2>
             Categories List
             <hr

@@ -102,84 +102,86 @@ class AddCategory extends Component {
 
     return (
       <React.Fragment>
-        <h2>
-          Add New Category
-          <hr
-            style={{
-              backgroundColor: "#dedede",
-              border: "none",
-              height: "1px"
-            }}
-          />
-        </h2>
-        <StyledPage>
-          <Card title={"Category Details"} style={{ width: 400 }}>
-            <Form layout="horizontal" onSubmit={this.handleAddCategory}>
-              <StyledFormItem label="Category Name:">
-                {getFieldDecorator("category", {})(
-                  <Input
-                    name="category_name"
-                    placeholder="Enter category name"
-                    onChange={this.handleCategoryName}
-                  />
-                )}
-              </StyledFormItem>
-              <StyledFormItem label="Status:">
-                {getFieldDecorator("status", {})(
-                  <Select
-                    showSearch
-                    style={{ width: "100%" }}
-                    // defaultValue="Enabled"
-                    placeholder="Select status"
-                    optionFilterProp="children"
-                    optionLabelProp="value"
-                    onChange={this.handleChangeStatus}
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    <Option value="Enabled">Enabled</Option>
-                    <Option value="Disabled">Disabled</Option>
-                  </Select>
-                )}
-              </StyledFormItem>
-              <StyledFormItem label="Description:">
-                {getFieldDecorator("description", {})(
-                  <TextArea
-                    name="description"
-                    rows={4}
-                    style={{ width: "100%", marginBottom: "0px" }}
-                    onChange={this.handleDescriptionChange}
-                  />
-                )}
-              </StyledFormItem>
-            </Form>
-
-            <div
+        <div style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+          <h2>
+            Add New Category
+            <hr
               style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "flex-end"
+                backgroundColor: "#dedede",
+                border: "none",
+                height: "1px"
               }}
-            >
-              <StyledButton
-                style={{ padding: "5px 10px", margin: "5px" }}
-                onClick={this.handleCancel}
+            />
+          </h2>
+          <StyledPage>
+            <Card title={"Category Details"} style={{ width: 400 }}>
+              <Form layout="horizontal" onSubmit={this.handleAddCategory}>
+                <StyledFormItem label="Category Name:">
+                  {getFieldDecorator("category", {})(
+                    <Input
+                      name="category_name"
+                      placeholder="Enter category name"
+                      onChange={this.handleCategoryName}
+                    />
+                  )}
+                </StyledFormItem>
+                <StyledFormItem label="Status:">
+                  {getFieldDecorator("status", {})(
+                    <Select
+                      showSearch
+                      style={{ width: "100%" }}
+                      // defaultValue="Enabled"
+                      placeholder="Select status"
+                      optionFilterProp="children"
+                      optionLabelProp="value"
+                      onChange={this.handleChangeStatus}
+                      filterOption={(input, option) =>
+                        option.props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                    >
+                      <Option value="Enabled">Enabled</Option>
+                      <Option value="Disabled">Disabled</Option>
+                    </Select>
+                  )}
+                </StyledFormItem>
+                <StyledFormItem label="Description:">
+                  {getFieldDecorator("description", {})(
+                    <TextArea
+                      name="description"
+                      rows={4}
+                      style={{ width: "100%", marginBottom: "0px" }}
+                      onChange={this.handleDescriptionChange}
+                    />
+                  )}
+                </StyledFormItem>
+              </Form>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-end"
+                }}
               >
-                Cancel
-              </StyledButton>
-              <StyledButton
-                style={{ padding: "5px 10px", margin: "5px" }}
-                type="primary"
-                onClick={this.handleAddCategory}
-              >
-                Add Category
-              </StyledButton>
-            </div>
-          </Card>
-        </StyledPage>
+                <StyledButton
+                  style={{ padding: "5px 10px", margin: "5px" }}
+                  type="primary"
+                  onClick={this.handleAddCategory}
+                >
+                  Add Category
+                </StyledButton>
+                <StyledButton
+                  style={{ padding: "5px 10px", margin: "5px" }}
+                  onClick={this.handleCancel}
+                >
+                  Cancel
+                </StyledButton>
+              </div>
+            </Card>
+          </StyledPage>
+        </div>
       </React.Fragment>
     );
   }
