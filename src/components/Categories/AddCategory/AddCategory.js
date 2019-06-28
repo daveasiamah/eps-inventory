@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
-
 import { Button, Form, Input, Select, Card } from "antd";
 import styled from "styled-components";
+
+import baseServerUri from "../../../utils/baseServerUri";
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -35,13 +36,14 @@ const StyledPage = styled.div`
 `;
 
 class AddCategory extends Component {
+  defaultState = {
+    category_name: "",
+    description: "",
+    status: ""
+  };
   constructor(props) {
     super(props);
-    this.state = {
-      category_name: "",
-      description: "",
-      status: ""
-    };
+    this.state = this.defaultState;
   }
 
   componentDidMount() {
@@ -55,8 +57,8 @@ class AddCategory extends Component {
     this.props.form.resetFields();
   };
 
-  handleChangeStatus = e => {
-    this.setState({ status: e });
+  handleChangeStatus = value => {
+    this.setState({ status: value });
   };
 
   handleCategoryName = e => {
@@ -70,31 +72,32 @@ class AddCategory extends Component {
   handleAddCategory = e => {
     e.preventDefault();
     let newCategory = { ...this.state };
-    // console.log(newCategory);
-    // console.log(`Here you go!: `, JSON.stringify(newCategory));
-
-    // Send that product created to the server
-    fetch("http://localhost:5000/api/categories", {
-      method: "POST",
-
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(newCategory)
-    }).then(res => {
-      res
-        .json()
-        .then(() => {
-          // console.log("successful" + JSON.stringify(data));
-          alert("Category Created Successfully!");
-          // this.state.category_name = "";
-        })
-        .catch(err => console.log(err));
-    });
-
-    // form.resetFields();
-    // this.setState({ visible: false });
+    if (
+      newCategory.category_name !== "" &&
+      newCategory.status.status !== "" &&
+      newCategory.description !== ""
+    ) {
+      fetch(`${baseServerUri}/api/categories`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newCategory)
+      }).then(res => {
+        res
+          .json()
+          .then(() => {
+            this.props.form.resetFields();
+            alert("Category Created Successfully!"); //TODO:Replace with toast
+            this.setState(this.defaultState);
+          })
+          .catch(err => console.log(err));
+      });
+    } else {
+      alert("Please fill all required fields.");
+      return;
+    }
   };
 
   render() {
@@ -114,10 +117,26 @@ class AddCategory extends Component {
             />
           </h2>
           <StyledPage>
-            <Card title={"Category Details"} style={{ width: 400 }}>
+            {/* <Card title={"Category Details"} style={{ width: 400 }}> */}
+
+            <Card
+              bordered={true}
+              style={{
+                width: 420,
+                borderRadius: "7px",
+                zIndex: 99,
+                opacity: 1,
+                borderTop: "3px solid #40A9FF"
+              }}
+            >
+              <h2 style={{ textAlign: "center" }}>Category Details</h2>
               <Form layout="horizontal" onSubmit={this.handleAddCategory}>
                 <StyledFormItem label="Category Name:">
-                  {getFieldDecorator("category", {})(
+                  {getFieldDecorator("category", {
+                    rules: [
+                      { required: true, message: "Please enter category name." }
+                    ]
+                  })(
                     <Input
                       name="category_name"
                       placeholder="Enter category name"
@@ -126,7 +145,11 @@ class AddCategory extends Component {
                   )}
                 </StyledFormItem>
                 <StyledFormItem label="Status:">
-                  {getFieldDecorator("status", {})(
+                  {getFieldDecorator("status", {
+                    rules: [
+                      { required: true, message: "Please select status." }
+                    ]
+                  })(
                     <Select
                       showSearch
                       style={{ width: "100%" }}
@@ -147,7 +170,11 @@ class AddCategory extends Component {
                   )}
                 </StyledFormItem>
                 <StyledFormItem label="Description:">
-                  {getFieldDecorator("description", {})(
+                  {getFieldDecorator("description", {
+                    rules: [
+                      { required: true, message: "Please add a description" }
+                    ]
+                  })(
                     <TextArea
                       name="description"
                       rows={4}

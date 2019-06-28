@@ -16,7 +16,9 @@ npm run build
 ```
 
 ## App Info
+
 Inventory Management in Node.js and React.
+
 ### Author
 
 David Asiamah
@@ -28,5 +30,6 @@ David Asiamah
 
 ### License
 
-This project is licensed under the MIT License
+All rights reserved to the owner: David Asiamah.
+
 # eps-ims-react

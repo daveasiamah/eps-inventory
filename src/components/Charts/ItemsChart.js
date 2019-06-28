@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Chart from "react-apexcharts";
 import axios from "axios";
 
+import baseServerUri from "../../utils/baseServerUri";
+
 class ItemsChart extends Component {
   state = {
     options: {
@@ -28,7 +30,7 @@ class ItemsChart extends Component {
     },
     series: [
       {
-        name: "price",
+        name: "quantity",
         data: []
       }
     ]
@@ -36,15 +38,16 @@ class ItemsChart extends Component {
 
   _isMounted = true;
 
+  //Testing with Inventory endpoint
   componentDidMount() {
     axios
-      .get(`http://localhost:5000/api/items`)
-      .then(items => {
-        const Items = items.data;
+      .get(`${baseServerUri}/api/inventory`)
+      .then(inventory => {
+        const Inventory = inventory.data;
 
-        const ItemNames = Items.map(item => item.item_name);
+        const ItemNames = Inventory.map(inv => inv.item_name);
 
-        const ItemPrice = Items.map(item => item.price);
+        const ItemQuantity = Inventory.map(inv => inv.quantity);
         if (this._isMounted) {
           this.setState({
             options: {
@@ -61,7 +64,7 @@ class ItemsChart extends Component {
             series: [
               {
                 ...this.state.series,
-                data: ItemPrice
+                data: ItemQuantity
               }
             ]
           });

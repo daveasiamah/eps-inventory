@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Chart from "react-apexcharts";
 import axios from "axios";
 
+import baseServerUri from "../../utils/baseServerUri";
+
 class CategoriesChart extends Component {
   constructor(props) {
     super(props);
@@ -30,7 +32,7 @@ class CategoriesChart extends Component {
 
   componentDidMount() {
     axios
-      .get(`http://localhost:5000/api/items`)
+      .get(`${baseServerUri}/api/items`)
       .then(items => {
         const Items = items.data;
 

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from "react";
+import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 import Menu from "antd/lib/menu";
 import Icon from "antd/lib/icon";
@@ -21,7 +21,7 @@ const StyledMenu = styled(Menu)`
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
-class Header extends React.Component {
+class Header extends Component {
   handleLogout = e => {
     e.preventDefault();
     this.props.clearCurrentProfile();
@@ -49,8 +49,10 @@ class Header extends React.Component {
             >
               <MenuItemGroup>
                 <Menu.Item key="user">
-                  <Icon type="idcard" />
-                  User
+                  <NavLink to="/users/" exact>
+                    <Icon type="idcard" />
+                    Users
+                  </NavLink>
                 </Menu.Item>
                 <Menu.Item key="print">
                   <Icon type="printer" />
@@ -192,7 +194,7 @@ class Header extends React.Component {
                   }
                 >
                   <Menu.Item key="add-waybill">
-                    <NavLink to="/waybills/add/waybill/" exact>
+                    <NavLink to="/waybill/add/waybill/" exact>
                       <Icon type="plus" />
                       Add Waybill
                     </NavLink>
@@ -269,6 +271,15 @@ class Header extends React.Component {
                   }
                 >
                   <MenuItemGroup>
+                    <Menu.Item key="user_name">
+                      <Icon
+                        type="idcard"
+                        theme="twoTone"
+                        style={{ fontSize: "25px" }}
+                      />
+                      {user.name}
+                    </Menu.Item>
+                    <Menu.Divider />
                     <Menu.Item key="register">
                       <NavLink to="/register" exact>
                         <Icon type="user-add" />

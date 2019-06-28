@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 
+// import baseServerUri from "../utils/baseServerUri";
+
 import { Table } from "antd";
 // import { Resizable } from "react-resizable";
-import { Button, Icon } from "antd";
+// import { Button, Icon } from "antd";
 // import styled from "styled-components";
 
 class ViewCategories extends Component {
@@ -22,6 +24,8 @@ class ViewCategories extends Component {
   componentDidMount() {
     if (!this.props.auth.isAuthenticated) {
       this.props.history.push("/login");
+    } else {
+      this.showTable();
     }
   }
 
@@ -52,7 +56,7 @@ class ViewCategories extends Component {
   //Fetching data from API using native 'fetch() api'.
   fetchCategories = () => {
     this.setState({ loading: true });
-    fetch(`http://localhost:5000/api/categories`, { method: "GET" })
+    fetch(`http://localhost:7000/api/categories`, { method: "GET" })
       .then(response => response.json())
       .then(categories => {
         // console.log(categories, categories.length);
@@ -67,7 +71,7 @@ class ViewCategories extends Component {
   };
 
   showTable = e => {
-    e.preventDefault();
+    // e.preventDefault();
     this.fetchCategories();
     // console.log(e);
   };
@@ -94,7 +98,7 @@ class ViewCategories extends Component {
             />
           </h2>
 
-          <Button
+          {/* <Button
             type="primary"
             onClick={this.showTable}
             style={{
@@ -111,7 +115,7 @@ class ViewCategories extends Component {
               />
             </span>
             View Categories
-          </Button>
+          </Button> */}
           <Table
             style={{ backgroundColor: "#FFFF" }}
             columns={columns}

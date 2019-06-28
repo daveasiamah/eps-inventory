@@ -3,10 +3,10 @@ import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 import { getCurrentProfile, deleteAccount } from "../../actions/profileActions";
 
-import { NavLink, Link } from "react-router-dom";
-import { Col, Row, Button, Spin, Icon } from "antd";
+import { NavLink } from "react-router-dom";
+import { Col, Row } from "antd";
 import styled from "styled-components";
-import MyProfileActions from "./ProfileActions";
+// import MyProfileActions from "./ProfileActions";
 
 import findimage from "../../images/find.png";
 import inventoryimage from "../../images/inventory.png";
@@ -68,9 +68,9 @@ class Dashboard extends Component {
   };
 
   componentDidMount() {
-    // if (!this.props.auth.isAuthenticated) {
-    //   this.props.history.push("/login");
-    // }
+    if (!this.props.auth.isAuthenticated) {
+      this.props.history.push("/login");
+    }
     this.props.getCurrentProfile();
   }
 
@@ -79,71 +79,6 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { user } = this.props.auth;
-    const { profile, loading } = this.props.profile;
-
-    let dashboardContent;
-
-    if (profile === null || loading) {
-      const antIcon = (
-        <Icon type="setting" style={{ fontSize: 40, color: "skyblue" }} spin />
-      );
-
-      dashboardContent = (
-        <div>
-          <Spin indicator={antIcon} size="large" />
-        </div>
-      );
-    } else {
-      //Check if logged in user has profile data
-      if (Object.keys(profile).length > 1) {
-        dashboardContent = (
-          <div>
-            <p>
-              Welcome <Link to={`/profile/${profile.handle}`}>{user.name}</Link>
-            </p>
-            <MyProfileActions />
-
-            <div>
-              <Button
-                type="danger"
-                onClick={this.handleDeleteAccount}
-                style={{ margin: "10px 0px" }}
-              >
-                Delete Account
-              </Button>
-            </div>
-          </div>
-        );
-      } else {
-        //User if logged in but has no profile
-        if (Object.keys(profile).length === 1) {
-          dashboardContent = (
-            <React.Fragment>
-              <div
-                style={{
-                  display: "flex",
-                  backgroundColor: "#E6F7FF",
-                  flexDirection: "column",
-                  padding: "5px",
-                  margin: "0px 0px 5px",
-                  border: "1px solid lightblue",
-                  borderRadius: "4px"
-                }}
-              >
-                <p>
-                  Welcome <strong>{user.name}</strong>
-                </p>
-                <p>You have not yet setup a profile, please add some info.</p>
-                <Link to="/create-profile">
-                  <Button type="primary">Create Profile</Button>
-                </Link>
-              </div>
-            </React.Fragment>
-          );
-        }
-      }
-    }
     return (
       <React.Fragment>
         <div
@@ -163,7 +98,7 @@ class Dashboard extends Component {
               }}
             />
           </h2>
-          {dashboardContent}
+          {/* {dashboardContent} */}
 
           <Row
             type="flex"
@@ -200,8 +135,10 @@ class Dashboard extends Component {
             </Col>
             <Col style={{ width: "18.6666667%" }}>
               <DashCard>
-                <ImageCard src={waybillimage} alt="waybillimage" />
-                <h3> Waybills </h3>
+                <NavLink exact to="/waybill/add/waybill/">
+                  <ImageCard src={waybillimage} alt="waybillimage" />
+                  <h3> Waybills </h3>
+                </NavLink>
               </DashCard>
             </Col>
             <Col style={{ width: "18.6666667%" }}>

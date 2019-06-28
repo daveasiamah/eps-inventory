@@ -4,6 +4,8 @@ import { PropTypes } from "prop-types";
 import { Button, Form, Input, InputNumber, Select, Card } from "antd";
 import styled from "styled-components";
 
+import baseServerUri from "../../../utils/baseServerUri";
+
 const FormItem = Form.Item;
 const { TextArea } = Input;
 const Option = Select.Option;
@@ -23,24 +25,25 @@ const Wrapper = styled.div`
 `;
 
 class AddItem extends Component {
+  defaultState = {
+    item_name: "",
+    category: "",
+    description: "",
+    units: "",
+    min_stock: "",
+    price: "",
+    status: "",
+    remarks: "",
+    categories: []
+  };
   constructor(props) {
     super(props);
-    this.state = {
-      item_name: "",
-      category: "",
-      description: "",
-      units: "",
-      min_stock: "",
-      price: "",
-      status: "",
-      remarks: "",
-      categories: []
-    };
+    this.state = this.defaultState;
   }
   _isMounted = true;
 
   fetchCategories = () => {
-    fetch(`http://localhost:5000/api/categories`, { method: "GET" })
+    fetch(`${baseServerUri}/api/categories`, { method: "GET" })
       .then(response => response.json())
       .then(categories => {
         // console.log(categories, categories.length);
@@ -51,6 +54,10 @@ class AddItem extends Component {
       .catch(err => {
         console.log(err);
       });
+  };
+
+  handleReset = () => {
+    this.setState(this.defaultState);
   };
 
   handleItemName = e => {
@@ -94,38 +101,51 @@ class AddItem extends Component {
       status,
       remarks
     } = this.state;
+    if (
+      item_name !== "" &&
+      category !== "" &&
+      description !== "" &&
+      min_stock !== "" &&
+      price !== "" &&
+      status !== "" &&
+      remarks !== ""
+    ) {
+      let newItem = {
+        item_name,
+        category,
+        description,
+        units,
+        min_stock,
+        price,
+        status,
+        remarks
+      };
 
-    let newItem = {
-      item_name,
-      category,
-      description,
-      units,
-      min_stock,
-      price,
-      status,
-      remarks
-    };
-
-    // console.log(newItem);
-    console.log(`Success: `, JSON.stringify(newItem));
-
-    // Send that product created to the server
-    fetch("http://localhost:5000/api/items", {
-      method: "POST",
-      body: JSON.stringify(newItem),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    }).then(res => {
-      res
-        .json()
-        .then(() => {
-          // console.log("successful" + data);
-          alert("Item created successfully!");
-        })
-        .catch(err => console.log(err));
-    });
+      // Send that product created to the server
+      fetch(`${baseServerUri}/api/items`, {
+        method: "POST",
+        body: JSON.stringify(newItem),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      }).then(res => {
+        res
+          .json()
+          .then(data => {
+            this.props.form.resetFields();
+            alert("Item Created.");
+          })
+          .catch(err => {
+            alert(`Please check:${err.Error.errmsg}`);
+            console.log(err.errmsg);
+          });
+      });
+    }
+    // else {
+    //   alert("Please fill all required fields.");
+    //   return;
+    // }
   };
 
   handleCancel = e => {
@@ -138,9 +158,9 @@ class AddItem extends Component {
   };
 
   componentDidMount() {
-    // if (!this.props.auth.isAuthenticated) {
-    //   this.props.history.push("/login");
-    // }
+    if (!this.props.auth.isAuthenticated) {
+      this.props.history.push("/login");
+    }
     this.fetchCategories();
   }
 
@@ -171,7 +191,19 @@ class AddItem extends Component {
             />
           </h2>
           <Wrapper>
-            <Card title="Item Details" width="500px">
+            {/* <Card title="Item Details" width="500px"> */}
+
+            <Card
+              bordered={true}
+              style={{
+                width: 500,
+                borderRadius: "7px",
+                zIndex: 99,
+                opacity: 1,
+                borderTop: "3px solid #40A9FF"
+              }}
+            >
+              <h2 style={{ textAlign: "center" }}>Item Details</h2>
               <Form layout="horizontal" onSubmit={this.handleAddItem}>
                 <SFormItem label="Item Name:">
                   {getFieldDecorator("item", {

@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 
-import { Table, Button, Icon } from "antd";
+import baseServerUri from "../../../utils/baseServerUri";
+
+import { Table } from "antd";
 // import { Grid, Cell } from "styled-css-grid";
 
 class ViewSuppliers extends Component {
@@ -19,6 +21,8 @@ class ViewSuppliers extends Component {
   componentDidMount() {
     if (!this.props.auth.isAuthenticated) {
       this.props.history.push("/login");
+    } else {
+      this.showTable();
     }
   }
 
@@ -38,13 +42,13 @@ class ViewSuppliers extends Component {
   };
   handleReset = () => {
     this.setState(this.defaultState);
-    console.log(this.defaultState);
+    // console.log(this.defaultState);
   };
 
   //Fetching data from API using native 'fetch() api.
   fetchSuppliers = () => {
     this.setState({ loading: true });
-    fetch(`http://localhost:5000/api/suppliers`, { method: "GET" })
+    fetch(`${baseServerUri}/api/suppliers`, { method: "GET" })
       .then(response => response.json())
       .then(suppliers => {
         // console.log(suppliers, suppliers.length);
@@ -57,7 +61,7 @@ class ViewSuppliers extends Component {
   };
 
   showTable = e => {
-    e.preventDefault();
+    // e.preventDefault();
     this.fetchSuppliers();
   };
 
@@ -82,7 +86,7 @@ class ViewSuppliers extends Component {
             />
           </h2>
 
-          <Button
+          {/* <Button
             type="primary"
             onClick={this.showTable}
             style={{
@@ -99,7 +103,7 @@ class ViewSuppliers extends Component {
               />
             </span>
             View Suppliers
-          </Button>
+          </Button> */}
           <Table
             style={{ backgroundColor: "#FFFF" }}
             columns={columns}

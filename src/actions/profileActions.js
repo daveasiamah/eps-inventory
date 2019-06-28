@@ -7,11 +7,13 @@ import {
   SET_CURRENT_USER
 } from "./types";
 
+import baseServerUri from "../utils/baseServerUri";
+
 //Get current user profile
 export const getCurrentProfile = () => dispatch => {
   dispatch(setProfileLoading());
   axios
-    .get("http://localhost:5000/api/profiles/")
+    .get(`${baseServerUri}/api/profiles/`)
     .then(res =>
       dispatch({
         type: GET_PROFILE,
@@ -21,7 +23,7 @@ export const getCurrentProfile = () => dispatch => {
     .catch(err =>
       dispatch({
         type: GET_PROFILE,
-        payload: { err }
+        payload: err.response.data
       })
     );
 };
@@ -36,7 +38,7 @@ export const setProfileLoading = () => {
 //Create Profile
 export const createProfile = (profileData, history) => dispatch => {
   axios
-    .post("http://localhost:5000/api/profiles/", profileData)
+    .post(`${baseServerUri}/api/profiles/`, profileData)
     .then(res => history.push("/dashboard"))
     .catch(err =>
       dispatch({
@@ -50,7 +52,7 @@ export const createProfile = (profileData, history) => dispatch => {
 export const deleteAccount = () => dispatch => {
   if (window.confirm("Are you sure? This can NOT be undone!")) {
     axios
-      .delete("http://localhost:5000/api/profiles/")
+      .delete(`${baseServerUri}/api/profiles/`)
       .then(res =>
         dispatch({
           type: SET_CURRENT_USER,

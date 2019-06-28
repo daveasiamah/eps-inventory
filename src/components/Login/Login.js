@@ -12,19 +12,17 @@ const FormItem = Form.Item;
 
 const LoginPage = styled.div`
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  justify-items: center;
-  padding: 100px 0 50px;
-  padding-bottom: 315px;
   z-index: -1;
-  background: no-repeat center/ 100% 100% url(${bgImage});
+  background: url(${bgImage});
+  background-size: cover;
+  height: 99vh;
 `;
 
 class Login extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       email: "",
@@ -43,6 +41,7 @@ class Login extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.auth.isAuthenticated) {
       this.props.history.push("/dashboard");
+      // console.log(this.props);
     }
 
     if (nextProps.errors) {
@@ -53,6 +52,15 @@ class Login extends Component {
   handleLogin = e => {
     e.preventDefault();
 
+    const userData = {
+      email: this.state.email,
+      password: this.state.password
+    };
+
+    this.props.loginUser(userData, this.props.history);
+    this.setState({ errors: this.props.errors.errors });
+    // console.log(this.props.errors);
+
     if (!isEmpty(this.state.email, this.state.password)) {
       const userData = {
         email: this.state.email,
@@ -60,17 +68,15 @@ class Login extends Component {
       };
 
       if (!isEmpty(this.props.loginUser(userData, this.props.history))) {
-        console.log(`Success!`);
+        this.setState({ errors: this.props.errors.errors });
       }
     } else {
-      if (isEmpty(this.state.email || this.state.password)) {
-        this.setState({ errors: "Please fill all fields." });
-        console.log("Please fill all fields!!!");
+      if (isEmpty(this.state.email, this.state.password)) {
+        this.setState({ errors: this.props.errors.errors });
+        // console.log(this.state.errors);
       }
-      let errors = this.props.errors;
-      this.setState({ errors: errors });
-      // console.log("Please fill all fields!");
-      console.log(this.state.errors);
+      let error = this.props.errors;
+      this.setState({ errors: error.errors });
     }
   };
 
@@ -83,11 +89,7 @@ class Login extends Component {
   };
 
   render() {
-    // const { errors } = this.state;
-    // console.log(this.props.errors);
-    // console.log(this.state);
     const { getFieldDecorator } = this.props.form;
-
     return (
       <React.Fragment>
         <LoginPage>
@@ -106,12 +108,19 @@ class Login extends Component {
           >
             <h1 style={{ textAlign: "center" }}>Login EPS-IMS</h1>
             <Form onSubmit={this.handleLogin} className="login-form">
-              {Object.values(this.props.errors) ? (
+              {this.props.errors ? (
                 <div style={{ color: "red", textAlign: "center" }}>
-                  {Object.values(this.props.errors)}
+                  {this.props.errors.errors}
                 </div>
               ) : null}
-
+              {/* {Object.values(this.props.errors.errors) ? (
+                <div style={{ color: "red", textAlign: "center" }}>
+                  {Object.values(this.props.errors.errors)}
+                </div>
+              ) : null} */}
+              {/* <div style={{ color: "red", textAlign: "center" }}>
+                {this.props.errors.errors}
+              </div> */}
               <FormItem label="Email">
                 {getFieldDecorator("email", {
                   rules: [
@@ -151,8 +160,6 @@ class Login extends Component {
                 )}
               </FormItem>
               <FormItem>
-                {/* <Checkbox>Remember me</Checkbox> */}
-
                 <Button
                   type="primary"
                   htmlType="submit"

@@ -17,11 +17,12 @@ const StyledFooter = styled.div`
   margin-top: 10px;
   /* padding-top: 30px; */
   background-color: white;
+  /* boxShadow: "0 -2px 5px rgba(0, 0, 0, 0.065)"  */
 `;
 
 const Footer = () => {
   return (
-    <StyledFooter style={{ boxShadow: "0 -2px 5px rgba(0, 0, 0, 0.065)" }}>
+    <StyledFooter>
       Powered by <strong>&nbsp;David Asiamah&nbsp;</strong> Copyright &copy;
       2019. All rights reserved.
     </StyledFooter>

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import Chart from "react-apexcharts";
+import baseServerUri from "../utils/baseServerUri";
 
-const url = "http://localhost:5000/api/items";
+const url = `${baseServerUri}/api/items`;
 
 class ChartsMain extends Component {
   constructor(props) {

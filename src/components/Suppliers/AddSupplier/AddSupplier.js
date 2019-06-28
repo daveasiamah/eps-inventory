@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
 
+import baseServerUri from "../../../utils/baseServerUri";
+
 import { Button, Card, Form, Input, Row, Col, Select } from "antd";
 import styled from "styled-components";
 import countries from "./countries.json";
@@ -81,10 +83,10 @@ class AddSupplier extends Component {
       return;
     }
     let newSupplier = { ...this.state };
-    console.log(newSupplier);
+    // console.log(newSupplier);
     // console.log(`Here you go!: `, JSON.stringify(newSupplier));
 
-    fetch("http://localhost:5000/api/suppliers", {
+    fetch(`${baseServerUri}/api/suppliers`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -95,7 +97,7 @@ class AddSupplier extends Component {
       res
         .json()
         .then(data => {
-          console.log("Message:" + JSON.stringify(data));
+          // console.log("Message:" + JSON.stringify(data));
           alert("Supplier created successfully!");
         })
         .catch(err => console.log(err));
@@ -121,8 +123,20 @@ class AddSupplier extends Component {
             />
           </h2>
           <PageWrapper>
-            <Card title="New Supplier Details" style={{ width: "50vw" }}>
-              <Form layout="vertical" onSubmit={this.handleAddItem}>
+            {/* <Card title="New Supplier Details" style={{ width: "50vw" }}> */}
+
+            <Card
+              bordered={true}
+              style={{
+                width: "60vw",
+                borderRadius: "7px",
+                zIndex: 99,
+                opacity: 1,
+                borderTop: "3px solid #40A9FF"
+              }}
+            >
+              <h2 style={{ textAlign: "center" }}>Supplier Details</h2>
+              <Form layout="vertical" onSubmit={this.handleAddSupplier}>
                 <Row gutter={8}>
                   <Col span={12}>
                     <AntFormItem label="Company Name:">

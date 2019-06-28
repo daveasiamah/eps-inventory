@@ -1,33 +1,42 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
-import {
-  Table
-  // Button, Icon
-} from "antd";
-// import { Resizable } from "react-resizable";
+import { Table } from "antd";
 
-import baseServerUri from "../../../utils/baseServerUri";
+import baseServerUri from "../../utils/baseServerUri";
 
-class ViewItems extends Component {
-  defaultState = {
-    data: [],
-    pagination: {},
-    loading: false
-  };
-
+class StockTransactionDetailReport extends Component {
   constructor(props) {
     super(props);
-    this.state = this.defaultState;
+    this.state = {
+      selectedReport: "",
+      reports: []
+    };
   }
+  _isMounted = true;
 
   componentDidMount() {
     if (!this.props.auth.isAuthenticated) {
       this.props.history.push("/login");
-    } else {
-      this.showTable();
     }
+    this.fetchInventory();
   }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
+  fetchInventory = () => {
+    this.setState({ loading: true });
+    fetch(`${baseServerUri}/api/inventory`, { method: "GET" })
+      .then(response => response.json())
+      .then(report => {
+        if (this._isMounted) {
+          this.setState({ loading: false, reports: report });
+        }
+      })
+      .catch(err => console.log(err));
+  };
 
   handleTableChange = (pagination, filters, sorter) => {
     const pager = { ...this.state.pagination };
@@ -36,7 +45,7 @@ class ViewItems extends Component {
       pagination: pager
     });
 
-    this.fetchItems({
+    this.fetchInventory({
       results: pagination.pageSize,
       page: pagination.current,
       sortField: sorter.field,
@@ -44,28 +53,26 @@ class ViewItems extends Component {
     });
   };
 
-  fetchItems = () => {
-    this.setState({ loading: true });
-    fetch(`${baseServerUri}/api/items`, { method: "GET" })
-      .then(response => response.json())
-      .then(items => {
-        console.log(items, items.length);
-        const pagination = { ...this.state.pagination };
-        //Read total count from server
-        pagination.total = items.length;
-        this.setState({ loading: false, data: items, pagination });
-      })
-      .catch(err => {
-        this.setState({ loading: false });
-        alert(`Oops! Server offline..., Please check and try again.`);
-        console.log(`Check server status ${err}`);
-      });
-  };
+  handleReportSelect = rptId => {
+    let Reports = this.state.reports;
+    //Search for the current Report in state
+    let currentReport = Reports.filter(rptById => rptById._id === rptId);
+    this.setState({
+      selectedReport: currentReport
+    });
+    console.log("The selected Report is: " + JSON.stringify(currentReport));
 
-  showTable = e => {
-    // e.preventDefault();
-    this.fetchItems();
-    // console.log(e);
+    //Map items to get selected values
+    currentReport.map(report =>
+      this.setState({
+        item_name: report.item_name,
+        category: report.category.category_name,
+        status: report.status,
+        description: report.description,
+        price: report.price,
+        min_stock: report.min_stock
+      })
+    );
   };
 
   render() {
@@ -79,7 +86,7 @@ class ViewItems extends Component {
           }}
         >
           <h2>
-            Items List
+            Stock Transaction Detail Report
             <hr
               style={{
                 backgroundColor: "#dedede",
@@ -105,7 +112,7 @@ class ViewItems extends Component {
                 type="eye"
               />
             </span>
-            View Items
+            View Stock Count
           </Button> */}
           <Table
             style={{ backgroundColor: "#FFFF" }}
@@ -113,7 +120,7 @@ class ViewItems extends Component {
             bordered
             size={"small"}
             rowKey={"_id"}
-            dataSource={this.state.data}
+            dataSource={this.state.reports}
             pagination={this.state.pagination}
             loading={this.state.loading}
             onChange={this.handleTableChange}
@@ -123,14 +130,6 @@ class ViewItems extends Component {
     );
   }
 }
-
-ViewItems.propTypes = {
-  auth: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-  auth: state.auth
-});
 
 const columns = [
   {
@@ -151,12 +150,18 @@ const columns = [
   },
   {
     title: "Category",
-    dataIndex: "category.category_name",
+    dataIndex: "category",
+
     width: "10%"
   },
   {
-    title: "Units",
-    dataIndex: "units",
+    title: "User",
+    dataIndex: "user",
+    width: "9%"
+  },
+  {
+    title: "Quantity",
+    dataIndex: "quantity",
     width: "9%"
   },
   {
@@ -169,11 +174,7 @@ const columns = [
     dataIndex: "status",
     width: "9%"
   },
-  {
-    title: "Remarks",
-    dataIndex: "remarks",
-    width: "15%"
-  },
+  { title: "Remarks", dataIndex: "remarks", width: "9%" },
   {
     title: "Date Updated",
     dataIndex: "updatedAt",
@@ -185,4 +186,12 @@ const columns = [
     width: "9%"
   }
 ];
-export default connect(mapStateToProps)(ViewItems);
+
+StockTransactionDetailReport.propTypes = {
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+export default connect(mapStateToProps)(StockTransactionDetailReport);

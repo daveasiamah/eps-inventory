@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { PropTypes } from "prop-types";
+import baseServerUri from "../../utils/baseServerUri";
 
 import {
   Select,
@@ -13,11 +14,10 @@ import {
   InputNumber,
   DatePicker,
   Table,
-  Divider,
-  Icon
+  // Icon,
+  Spin
 } from "antd";
 import styled from "styled-components";
-import moment from "react-moment";
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -60,6 +60,7 @@ class Inventory extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      user_name: "",
       item_name: "",
       category: "",
       status: "",
@@ -91,7 +92,13 @@ class Inventory extends Component {
 
   handleTopUp = e => {
     e.preventDefault();
-
+    // const check =()=>{
+    this.props.form.validateFields(err => {
+      if (!err) {
+        console.log("success");
+      }
+    });
+    // };
     const {
       item_name,
       category,
@@ -110,46 +117,54 @@ class Inventory extends Component {
       exp_date,
       quantity
     } = this.state;
+    if (
+      item_name !== "" &&
+      transaction_type !== "" &&
+      purchase_type !== "" &&
+      supplier !== "" &&
+      location !== "" &&
+      waybill !== "" &&
+      quantity !== ""
+    ) {
+      let newStockItem = {
+        item_name,
+        category,
+        description,
+        price,
+        min_stock,
+        status,
+        transaction_type,
+        purchase_type,
+        supplier,
+        location,
+        remarks,
+        waybill,
+        part_number,
+        manufacture_date,
+        exp_date,
+        quantity
+      };
 
-    let newStockItem = {
-      item_name,
-      category,
-      description,
-      price,
-      min_stock,
-      status,
-      transaction_type,
-      purchase_type,
-      supplier,
-      location,
-      remarks,
-      waybill,
-      part_number,
-      manufacture_date,
-      exp_date,
-      quantity
-    };
-
-    fetch("http://localhost:5000/api/inventory", {
-      method: "POST",
-      body: JSON.stringify(newStockItem),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    }).then(res => {
-      res
-        .json()
-        .then(data => {
-          // console.log("Payload: " + JSON.stringify(data));
+      fetch(`${baseServerUri}/api/inventory`, {
+        method: "POST",
+        body: JSON.stringify(newStockItem),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+        .then(res => {
+          this.props.form.resetFields();
           alert("Stock updated successfully!");
           this.fetchInventory();
         })
         .catch(err => {
-          alert("Please fill all fields!");
-          console.log(err);
+          alert("Error ocurred" + err);
+          this.setState({ errors: err });
         });
-    });
+    } else {
+      return alert("Please fill all required fields");
+    }
   };
 
   handlePrice = e => {
@@ -205,13 +220,16 @@ class Inventory extends Component {
   handleItemSelect = itemId => {
     let Items = this.state.items;
     //Search for the current item in state
-    let currentItem = Items.filter(itemById => itemById._id === itemId);
+    // let currentItem = Items.find(itemById => itemById._id === itemId);
+
+    // let currentItem = Items.filter(itemById => itemById._id === itemId);
+    let currentItem = Items.filter(cItemId => cItemId._id === itemId);
+
     this.setState({
       selectedItem: currentItem
     });
-    // console.log("The selected Item is: " + JSON.stringify(currentItem));
 
-    //Map items to get selected values
+    // Map items to get selected values
     currentItem.map(item =>
       this.setState({
         item_name: item.item_name,
@@ -226,10 +244,9 @@ class Inventory extends Component {
 
   fetchItems = () => {
     this.setState({ loading: true });
-    fetch(`http://localhost:5000/api/items`, { method: "GET" })
+    fetch(`${baseServerUri}/api/items`, { method: "GET" })
       .then(response => response.json())
       .then(items => {
-        // console.log(items, items.length);
         const pagination = { ...this.state.pagination };
         //Read total count from server
         pagination.total = items.length;
@@ -243,7 +260,7 @@ class Inventory extends Component {
   //Fetching suppliers list from API endpoint.
   fetchSuppliers = () => {
     this.setState({ loading: true });
-    fetch(`http://localhost:5000/api/suppliers`, { method: "GET" })
+    fetch(`${baseServerUri}/api/suppliers`, { method: "GET" })
       .then(response => response.json())
       .then(suppliers => {
         if (this._isMounted) {
@@ -255,37 +272,43 @@ class Inventory extends Component {
 
   fetchInventory = () => {
     this.setState({ loading: true });
-    fetch(`http://localhost:5000/api/inventory`, { method: "GET" })
+    fetch(`${baseServerUri}/api/inventory`, { method: "GET" })
       .then(response => response.json())
       .then(inventory => {
+        const pagination = { ...this.state.pagination };
+        //Read total count from server
+        pagination.total = inventory.length;
+        console.log(inventory);
         if (this._isMounted) {
-          this.setState({ loading: false, inventory: inventory });
+          this.setState({ loading: false, inventory: inventory, pagination });
         }
       })
       .catch(err => console.log(err));
   };
 
-  handleTableChange = (pagination, filters, sorter) => {
-    const pager = { ...this.state.pagination };
-    pager.current = pagination.current;
-    this.setState({
-      pagination: pager
-    });
+  // handleTableChange = (pagination, filters, sorter) => {
+  //   const pager = { ...this.state.pagination };
+  //   pager.current = pagination.current;
+  //   this.setState({
+  //     pagination: pager
+  //   });
 
-    this.fetchItems({
-      results: pagination.pageSize,
-      position: pagination.position,
-      page: pagination.current,
-      sortField: sorter.field,
-      sortOrder: sorter.order
-    });
-  };
+  //   this.fetchItems({
+  //     results: pagination.pageSize,
+  //     position: pagination.position,
+  //     page: pagination.current,
+  //     sortField: sorter.field,
+  //     sortOrder: sorter.order
+  //   });
+  // };
 
   componentDidMount() {
     this.fetchItems();
     this.fetchSuppliers();
     if (!this.props.auth.isAuthenticated) {
       this.props.history.push("/login");
+    } else {
+      this.fetchInventory();
     }
   }
 
@@ -298,6 +321,20 @@ class Inventory extends Component {
     return (
       <React.Fragment>
         <InvWrapper>
+          {/* <span
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              // margin: "auto",
+              zIndex: "1"
+              // width: "550px",
+              // height: "60px"
+            }}
+          > */}
+          {this.state.loading === true ? (
+            <Spin tip="loading" size="large" />
+          ) : null}
+          {/* </span> */}
           <h2>
             Inventory - [Receive Stock]
             <hr
@@ -316,7 +353,11 @@ class Inventory extends Component {
             >
               <StyledFormItem>
                 <FormItem label="Item Name:">
-                  {getFieldDecorator("item")(
+                  {getFieldDecorator("item", {
+                    rules: [
+                      { required: true, message: "Please select an item." }
+                    ]
+                  })(
                     <Select
                       showSearch
                       autoFocus="true"
@@ -382,7 +423,14 @@ class Inventory extends Component {
             >
               <StyledFormItem>
                 <FormItem label="Transaction Type:">
-                  {getFieldDecorator("receipt")(
+                  {getFieldDecorator("receipt", {
+                    rules: [
+                      {
+                        required: true,
+                        message: "Transaction type is required."
+                      }
+                    ]
+                  })(
                     <Select
                       showSearch
                       placeholder="Select transaction type"
@@ -401,7 +449,14 @@ class Inventory extends Component {
                   )}
                 </FormItem>
                 <FormItem label="Purchase Type:">
-                  {getFieldDecorator("ptype")(
+                  {getFieldDecorator("Purchase_type", {
+                    rules: [
+                      {
+                        required: true,
+                        message: "Purchase type is required."
+                      }
+                    ]
+                  })(
                     <Select
                       showSearch
                       placeholder="Select purchase type"
@@ -420,7 +475,11 @@ class Inventory extends Component {
                   )}
                 </FormItem>
                 <FormItem label="Supplier:">
-                  {getFieldDecorator("supplier")(
+                  {getFieldDecorator("supplier", {
+                    rules: [
+                      { required: true, message: "Supplier is required." }
+                    ]
+                  })(
                     <Select
                       showSearch
                       style={{ width: "100%" }}
@@ -445,7 +504,14 @@ class Inventory extends Component {
                   )}
                 </FormItem>
                 <FormItem label="Location(Warehouse):">
-                  {getFieldDecorator("location")(
+                  {getFieldDecorator("location", {
+                    rules: [
+                      {
+                        required: true,
+                        message: "Warehouse/location is required"
+                      }
+                    ]
+                  })(
                     <Select
                       showSearch
                       style={{ width: "100%" }}
@@ -482,7 +548,14 @@ class Inventory extends Component {
             >
               <StyledFormItem>
                 <FormItem label="Waybill Number:">
-                  {getFieldDecorator("waybill number")(
+                  {getFieldDecorator("waybill number", {
+                    rules: [
+                      {
+                        required: true,
+                        message: "Waybill number is required"
+                      }
+                    ]
+                  })(
                     <Input
                       placeholder="Enter waybill number"
                       onChange={this.handleWaybill}
@@ -518,8 +591,12 @@ class Inventory extends Component {
                 </FormItem>
                 <FormItem label="Quantity to Add:">
                   {getFieldDecorator("quantity", {
-                    required: true,
-                    message: "Please enter quantity"
+                    rules: [
+                      {
+                        required: true,
+                        message: "Quantity is required"
+                      }
+                    ]
                   })(
                     <InputNumber
                       size="large"
@@ -584,7 +661,6 @@ class Inventory extends Component {
               </StyledFormItem>
             </StyledCard>
           </CardRow>
-
           <div>
             <h2>
               Items List
@@ -596,26 +672,7 @@ class Inventory extends Component {
                 }}
               />
             </h2>
-
-            <Button
-              type="primary"
-              onClick={this.fetchInventory}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                alignContent: "center"
-              }}
-            >
-              <span>
-                <Icon
-                  style={{ fontSize: "1.5em", marginRight: "5px" }}
-                  type="eye"
-                />
-              </span>
-              View Inventory
-            </Button>
           </div>
-
           <Table
             columns={columns}
             style={{ backgroundColor: "#FFFF" }}
@@ -637,10 +694,10 @@ const columns = [
   {
     title: "Item Name",
     dataIndex: "item_name",
-    filters: [
-      { text: "Male", value: "male" },
-      { text: "Female", value: "female" }
-    ],
+    // filters: [
+    //   { text: "Male", value: "male" },
+    //   { text: "Female", value: "female" }
+    // ],
     sorter: true,
     // render: item_name => `${item_name.item_name}`,
     width: "15%"
@@ -675,6 +732,7 @@ const columns = [
     sorter: true,
     width: "9%"
   },
+  // { title: "User", dataIndex: "user_name", width: "9%" },
   {
     title: "Remarks",
     dataIndex: "remarks",
@@ -683,7 +741,7 @@ const columns = [
   },
   {
     title: "Date Updated",
-    dataIndex: "updatedAt",
+    dataIndex: "date_updated",
     width: "9%"
     // render: () => (
     //   <span>
@@ -694,7 +752,7 @@ const columns = [
   },
   {
     title: "Date Created",
-    dataIndex: "createdAt",
+    dataIndex: "date_updated",
     width: "9%"
   }
 ];
