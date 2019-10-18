@@ -3,10 +3,11 @@ import { connect } from "react-redux";
 import { loginUser } from "../../actions/authActions";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Form, Icon, Input, Button, Card } from "antd";
+import { Form, Icon, Input, Button, Card, Alert } from "antd";
 
 import bgImage from "./login-bg3.jpeg";
 import isEmpty from "../../validation/is-empty";
+import { CLEAR_ERRORS, CLEANUP_MESSAGES } from "../../actions/types";
 
 const FormItem = Form.Item;
 
@@ -27,7 +28,11 @@ class Login extends Component {
     this.state = {
       email: "",
       password: "",
+      visible: false,
       errors: {}
+    };
+    this.handleClose = () => {
+      return this.setState({ visible: false });
     };
   }
 
@@ -36,6 +41,10 @@ class Login extends Component {
     if (this.props.auth.isAuthenticated) {
       this.props.history.push("/dashboard");
     }
+  }
+
+  componentWillUnmount() {
+    this.setState({ errors: null });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -108,19 +117,16 @@ class Login extends Component {
           >
             <h1 style={{ textAlign: "center" }}>Login EPS-IMS</h1>
             <Form onSubmit={this.handleLogin} className="login-form">
-              {this.props.errors ? (
-                <div style={{ color: "red", textAlign: "center" }}>
-                  {this.props.errors.errors}
-                </div>
+              {this.props.errors.errors ? (
+                this.state.visible ? (
+                  <Alert
+                    message={this.props.errors.errors}
+                    type="error"
+                    closable
+                    afterClose={this.handleClose}
+                  />
+                ) : null
               ) : null}
-              {/* {Object.values(this.props.errors.errors) ? (
-                <div style={{ color: "red", textAlign: "center" }}>
-                  {Object.values(this.props.errors.errors)}
-                </div>
-              ) : null} */}
-              {/* <div style={{ color: "red", textAlign: "center" }}>
-                {this.props.errors.errors}
-              </div> */}
               <FormItem label="Email">
                 {getFieldDecorator("email", {
                   rules: [

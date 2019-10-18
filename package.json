@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "antd": "^3.22.0",
+    "antd": "^3.23.6",
     "apexcharts": "^3.6.11",
     "axios": "^0.18.1",
     "jwt-decode": "^2.2.0",

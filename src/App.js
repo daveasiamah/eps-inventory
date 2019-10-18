@@ -21,6 +21,7 @@ import AddItem from "./components/Items/AddItem/AddItem";
 import ViewItems from "./components/Items/ViewItems/ViewItems";
 import Reports from "./components/Reports/Reports";
 import Waybill from "./components/Waybill/AddWaybill/Waybill";
+import ViewWaybill from "./components/Waybill/ViewWaybills/ViewWaybill";
 import AddSupplier from "./components/Suppliers/AddSupplier/AddSupplier";
 import ViewSuppliers from "./components/Suppliers/ViewSuppliers/ViewSuppliers";
 import Login from "./components/Login/Login";
@@ -137,7 +138,11 @@ const DefaultContainer = () => (
         component={ViewSuppliers}
       />
       <PrivateRoute exact path="/waybill/add/waybill" component={Waybill} />
-      <PrivateRoute exact path="/waybill/view/waybills" component={Waybill} />
+      <PrivateRoute
+        exact
+        path="/waybill/view/waybills"
+        component={ViewWaybill}
+      />
       <PrivateRoute exact path="/users" component={Users} />
       <Route component={NotFoundPage} />
     </Switch>

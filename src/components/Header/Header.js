@@ -199,8 +199,8 @@ class Header extends Component {
                       Add Waybill
                     </NavLink>
                   </Menu.Item>
-                  <Menu.Item key="view-waybills">
-                    <NavLink to="/waybills/view/waybills/" exact>
+                  <Menu.Item key="view-waybill">
+                    <NavLink to="/waybill/view/waybill/" exact>
                       <Icon type="eye" />
                       View Waybills
                     </NavLink>
@@ -261,7 +261,7 @@ class Header extends Component {
                             fontSize: "1.5rem"
                           }}
                           size="large"
-                          shape="square"
+                          shape="circle"
                         >
                           {user.name.slice(0, 1)}
                           {/* {user.name.split(" ")[0]} */}
