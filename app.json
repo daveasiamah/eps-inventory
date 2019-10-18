@@ -1,0 +1,17 @@
+{
+  "addons": [
+
+  ],
+  "buildpacks": [
+
+  ],
+  "description": "front end for eps inventory management system",
+  "env": {
+  },
+  "formation": {
+  },
+  "name": "ims-pos",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
