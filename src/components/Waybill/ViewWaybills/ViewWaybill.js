@@ -1,9 +1,9 @@
 import React from "react";
 
-const ViewWaybill = props => {
+const ViewWaybill = () => {
   return (
     <div>
-      <h2>Waybills List</h2>
+      <h2>Waybill List</h2>
     </div>
   );
 };

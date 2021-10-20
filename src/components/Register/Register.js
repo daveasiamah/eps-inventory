@@ -22,12 +22,13 @@ const RegisterPage = styled.div`
   z-index: -1;
   background: none;
 `;
+
 class Register extends Component {
   state = {
     name: "",
     email: "",
     password: "",
-    errors: {}
+    errors: {},
   };
 
   componentDidMount() {
@@ -42,7 +43,7 @@ class Register extends Component {
     }
   }
 
-  handleRegister = e => {
+  handleRegister = (e) => {
     e.preventDefault();
 
     const { name, email, password } = this.state;
@@ -65,15 +66,15 @@ class Register extends Component {
     // resetFields();
   };
 
-  handleName = e => {
+  handleName = (e) => {
     this.setState({ name: e.target.value });
   };
 
-  handleEmail = e => {
+  handleEmail = (e) => {
     this.setState({ email: e.target.value });
   };
 
-  handlePassword = e => {
+  handlePassword = (e) => {
     this.setState({ password: e.target.value });
   };
 
@@ -97,7 +98,7 @@ class Register extends Component {
             borderBottomRightRadius: "7px",
             zIndex: 99,
             opacity: 1,
-            borderTop: "3px solid #40A9FF"
+            borderTop: "3px solid #40A9FF",
           }}
         >
           <h1 style={{ textAlign: "center" }}>Register User</h1>
@@ -112,9 +113,9 @@ class Register extends Component {
                 rules: [
                   {
                     required: true,
-                    message: "Please input your name!"
-                  }
-                ]
+                    message: "Please input your name!",
+                  },
+                ],
               })(
                 <Input
                   prefix={
@@ -130,13 +131,13 @@ class Register extends Component {
                 rules: [
                   {
                     type: "email",
-                    message: "The input is not a valid E-mail!"
+                    message: "The input is not a valid E-mail!",
                   },
                   {
                     required: true,
-                    message: "Please input your E-mail!"
-                  }
-                ]
+                    message: "Please input your E-mail!",
+                  },
+                ],
               })(
                 <Input
                   prefix={
@@ -153,9 +154,9 @@ class Register extends Component {
                 rules: [
                   {
                     required: true,
-                    message: "Please enter a password"
-                  }
-                ]
+                    message: "Please enter a password",
+                  },
+                ],
               })(
                 <Input.Password
                   prefix={
@@ -182,7 +183,7 @@ class Register extends Component {
               </NavLink>
               <span style={{ padding: "10px", float: "right" }}>
                 <Button
-                  onClick={e => {
+                  onClick={(e) => {
                     e.preventDefault();
                     this.props.form.resetFields();
                   }}
@@ -203,15 +204,14 @@ const UserRegistration = Form.create({ name: "register" })(Register);
 Register.propTypes = {
   registerUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  { registerUser }
-)(withRouter(UserRegistration));
+export default connect(mapStateToProps, { registerUser })(
+  withRouter(UserRegistration)
+);

@@ -1,3 +1,4 @@
+import "antd/dist/antd.min.css";
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -6,8 +7,6 @@ import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { clearCurrentProfile } from "./actions/profileActions";
-
-import "antd/dist/antd.min.css";
 
 import PrivateRoute from "./common/PrivateRoutes/PrivateRoute";
 import CreateProfile from "./components/CreateProfile/CreateProfile";
@@ -58,7 +57,6 @@ class App extends Component {
       <Provider store={store}>
         <React.Fragment>
           <Switch>
-            {/* <Route exact path="/" component={HomePage} /> */}
             <Route exact path="/login" component={LoginContainer} />
             <Route exact path="/register" component={RegisterContainer} />
             <Route component={DefaultContainer} />
@@ -73,7 +71,6 @@ const LoginContainer = () => (
   <React.Fragment>
     <Switch>
       <Route exact path="/login" component={Login} />
-      {/* <Route path="" component={NotFoundPage} /> */}
     </Switch>
   </React.Fragment>
 );
@@ -143,7 +140,7 @@ const DefaultContainer = () => (
         path="/waybill/view/waybills"
         component={ViewWaybill}
       />
-      <PrivateRoute exact path="/users" component={Users} />
+      <Route exact path="/users" component={Users} />
       <Route component={NotFoundPage} />
     </Switch>
   </React.Fragment>

@@ -22,7 +22,7 @@ const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
 class Header extends Component {
-  handleLogout = e => {
+  handleLogout = (e) => {
     e.preventDefault();
     this.props.clearCurrentProfile();
     this.props.logoutUser();
@@ -200,7 +200,7 @@ class Header extends Component {
                     </NavLink>
                   </Menu.Item>
                   <Menu.Item key="view-waybill">
-                    <NavLink to="/waybill/view/waybill/" exact>
+                    <NavLink to="/waybill/view/waybills/" exact>
                       <Icon type="eye" />
                       View Waybills
                     </NavLink>
@@ -227,23 +227,23 @@ class Header extends Component {
                 </Menu.Item>
               </MenuItemGroup>
             </SubMenu>
+            <Menu.Item key="dashboard">
+              <NavLink to="/dashboard/" exact>
+                <span className="submenu-title-wrapper">
+                  <Icon type="dashboard" />
+                  Dashboard
+                </span>
+              </NavLink>
+            </Menu.Item>
             <Menu.Item key="about">
               <NavLink
-                to="//github.com/daveasiamah/ims-pos/issues"
+                to="//github.com/daveasiamah/eps_ims_frontend/issues"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <span className="submenu-title-wrapper">
                   <Icon type="question-circle" />
                   Help
-                </span>
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item key="dashboard">
-              <NavLink to="/dashboard/" exact>
-                <span className="submenu-title-wrapper">
-                  <Icon type="dashboard" />
-                  Dashboard
                 </span>
               </NavLink>
             </Menu.Item>
@@ -258,7 +258,7 @@ class Header extends Component {
                             backgroundColor: "#40A9FF",
                             verticalAlign: "middle",
                             // fontWeight: "bold",
-                            fontSize: "1.5rem"
+                            fontSize: "1.5rem",
                           }}
                           size="large"
                           shape="circle"
@@ -308,15 +308,14 @@ class Header extends Component {
 
 Header.propTypes = {
   logoutUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  { logoutUser, clearCurrentProfile }
-)(withRouter(Header));
+export default connect(mapStateToProps, { logoutUser, clearCurrentProfile })(
+  withRouter(Header)
+);

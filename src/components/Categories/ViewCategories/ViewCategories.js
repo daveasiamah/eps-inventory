@@ -8,6 +8,7 @@ import { Table } from "antd";
 // import { Resizable } from "react-resizable";
 // import { Button, Icon } from "antd";
 // import styled from "styled-components";
+import baseServerUri from "../../../utils/baseServerUri";
 
 class ViewCategories extends Component {
   constructor(props) {
@@ -17,7 +18,7 @@ class ViewCategories extends Component {
   defaultState = {
     data: [],
     pagination: {},
-    loading: false
+    loading: false,
   };
   _isMounted = true;
 
@@ -37,14 +38,14 @@ class ViewCategories extends Component {
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
     this.setState({
-      pagination: pager
+      pagination: pager,
     });
 
     this.fetchCategories({
       results: pagination.pageSize,
       page: pagination.current,
       sortField: sorter.field,
-      sortOrder: sorter.order
+      sortOrder: sorter.order,
     });
   };
 
@@ -56,9 +57,9 @@ class ViewCategories extends Component {
   //Fetching data from API using native 'fetch() api'.
   fetchCategories = () => {
     this.setState({ loading: true });
-    fetch(`http://localhost:7000/api/categories`, { method: "GET" })
-      .then(response => response.json())
-      .then(categories => {
+    fetch(`${baseServerUri}/api/categories`, { method: "GET" })
+      .then((response) => response.json())
+      .then((categories) => {
         // console.log(categories, categories.length);
         const pagination = { ...this.state.pagination };
         //Read total count from server
@@ -67,10 +68,10 @@ class ViewCategories extends Component {
           this.setState({ loading: false, data: categories, pagination });
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
-  showTable = e => {
+  showTable = (e) => {
     // e.preventDefault();
     this.fetchCategories();
     // console.log(e);
@@ -84,7 +85,7 @@ class ViewCategories extends Component {
           style={{
             marginBottom: "100px",
             paddingLeft: "10px",
-            paddingRight: "10px"
+            paddingRight: "10px",
           }}
         >
           <h2>
@@ -93,7 +94,7 @@ class ViewCategories extends Component {
               style={{
                 backgroundColor: "#dedede",
                 border: "none",
-                height: "1px"
+                height: "1px",
               }}
             />
           </h2>
@@ -143,36 +144,36 @@ const columns = [
     // ],
     // sorter: true,
     // render: name => `${name.item_name}`
-    width: "30%"
+    width: "30%",
   },
   {
     title: "Description",
     dataIndex: "description",
-    width: "30%"
+    width: "30%",
   },
   {
     title: "Status",
     dataIndex: "status",
-    width: "10%"
+    width: "10%",
   },
   {
     title: "Date Updated",
     dataIndex: "updatedAt",
-    width: "15%"
+    width: "15%",
   },
   {
     title: "Date Created",
     dataIndex: "createdAt",
-    width: "15%"
-  }
+    width: "15%",
+  },
 ];
 
 ViewCategories.propTypes = {
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
-  auth: state.auth
+const mapStateToProps = (state) => ({
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps)(ViewCategories);

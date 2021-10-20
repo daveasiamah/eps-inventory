@@ -23,7 +23,6 @@ const DashCard = styled.div`
   &:hover {
     cursor: pointer;
     border: 1px solid #bababa;
-    /* box-shadow: 3px 3px 0 #40a9ff; */
     overflow: hidden;
     margin: -5px;
     transition: all 0.1s ease-in-out;
@@ -32,36 +31,31 @@ const DashCard = styled.div`
   transition: all 0.2s ease-in-out;
 `;
 
-// const HeaderCard = styled(Card)`
-//   & > .ant-card-body {
-//     padding: 10px;
-//     background-color: "#ffff";
-//   }
-// `;
+const ChartWrapper = styled.div`
+  background-color: "#ffff";
+  box-shadow: 3px 3px 0 #bababa;
+  border: 1px solid #bababa;
+  padding: 10px;
+  /* margin: 10px 30px; */
+  height: 45rem;
+  width: 98vw;
+`;
 
 const ImageCard = styled.img`
   width: 70px;
   height: 70px;
 `;
 
-// const topColResponsiveProps = {
-//   xs: 24,
-//   sm: 12,
-//   md: 8,
-//   lg: 4,
-//   xl: 4
-// };
-
 class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
-      errors: false
+      errors: false,
     };
   }
   _isMounted = true;
 
-  handleDeleteAccount = e => {
+  handleDeleteAccount = (e) => {
     e.preventDefault();
 
     this.props.deleteAccount();
@@ -80,107 +74,90 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <React.Fragment>
-        <div
+      <div
+        style={{
+          marginBottom: "150px",
+          paddingLeft: "10px",
+          paddingRight: "10px",
+        }}
+      >
+        <h2>
+          Dashboard
+          <hr
+            style={{
+              backgroundColor: "#dedede",
+              border: "none",
+              height: "1px",
+            }}
+          />
+        </h2>
+
+        {/* DashboardContent */}
+
+        <Row
+          type="flex"
+          justify="space-between"
           style={{
-            marginBottom: "150px",
-            paddingLeft: "10px",
-            paddingRight: "10px"
+            padding: "1px",
+            textAlign: "center",
+            margin: "10px",
           }}
         >
-          <h2>
-            Dashboard
-            <hr
-              style={{
-                backgroundColor: "#dedede",
-                border: "none",
-                height: "1px"
-              }}
-            />
-          </h2>
-          {/* {dashboardContent} */}
-
-          <Row
-            type="flex"
-            justify="space-between"
-            style={{
-              padding: "1px",
-              textAlign: "center",
-              margin: "10px"
-            }}
-          >
-            <Col style={{ width: "18.6666667%" }}>
-              <NavLink to="/Inventory/receive-stock/" exact>
-                <DashCard>
-                  <ImageCard src={inventoryimage} alt="inventoryimage" />
-                  <h3>Inventory</h3>
-                </DashCard>
+          <Col style={{ width: "18.7%" }}>
+            <NavLink to="/Inventory/receive-stock/" exact>
+              <DashCard>
+                <ImageCard src={inventoryimage} alt="inventoryimage" />
+                <h3>Inventory</h3>
+              </DashCard>
+            </NavLink>
+          </Col>
+          <Col style={{ width: "18.7%" }}>
+            <DashCard>
+              <NavLink to="/suppliers/view/suppliers/" exact>
+                <ImageCard src={partnersimage} alt="partnersimage" />
+                <h3> Suppliers </h3>
               </NavLink>
-            </Col>
-            <Col style={{ width: "18.6666667%" }}>
-              <DashCard>
-                <NavLink to="/suppliers/view/suppliers/" exact>
-                  <ImageCard src={partnersimage} alt="partnersimage" />
-                  <h3> Suppliers </h3>
-                </NavLink>
-              </DashCard>
-            </Col>
-            <Col style={{ width: "18.6666667%" }}>
-              <DashCard>
-                <NavLink exact to="/reports/view/reports/">
-                  <ImageCard src={reportsimage} alt="reportsimage" />
-                  <h3> Reports</h3>
-                </NavLink>
-              </DashCard>
-            </Col>
-            <Col style={{ width: "18.6666667%" }}>
-              <DashCard>
-                <NavLink exact to="/waybill/add/waybill/">
-                  <ImageCard src={waybillimage} alt="waybillimage" />
-                  <h3> Waybills </h3>
-                </NavLink>
-              </DashCard>
-            </Col>
-            <Col style={{ width: "18.6666667%" }}>
-              <DashCard>
-                <ImageCard src={findimage} alt="findimage" />
-                <h3> Find </h3>
-              </DashCard>
-            </Col>
-          </Row>
-          <div
-            style={{
-              display: "grid",
-              // width: "100%",
-              gridGap: "20px",
-              gridTemplateColumns: "repeat(1,1fr)"
-            }}
-          >
-            <div
-              style={{
-                backgroundColor: "#ffff",
-                boxShadow: "3px 3px 0 #bababa",
-                border: "1px solid #bababa",
-                padding: "10px",
-                textAlign: "center"
-              }}
-            >
-              <ItemsChart />
-            </div>
-            <div
-              style={{
-                backgroundColor: "#ffff",
-                boxShadow: "3px 3px 0 #bababa",
-                border: "1px solid #bababa",
-                padding: "10px",
-                textAlign: "center"
-              }}
-            >
-              <CategoriesChart />
-            </div>
-          </div>
+            </DashCard>
+          </Col>
+          <Col style={{ width: "18.7%" }}>
+            <DashCard>
+              <NavLink exact to="/reports/view/reports/">
+                <ImageCard src={reportsimage} alt="reportsimage" />
+                <h3> Reports</h3>
+              </NavLink>
+            </DashCard>
+          </Col>
+          <Col style={{ width: "18.7%" }}>
+            <DashCard>
+              <NavLink exact to="/waybill/add/waybill/">
+                <ImageCard src={waybillimage} alt="waybillimage" />
+                <h3> Waybills </h3>
+              </NavLink>
+            </DashCard>
+          </Col>
+          <Col style={{ width: "18.7%" }}>
+            <DashCard>
+              <ImageCard src={findimage} alt="findimage" />
+              <h3> Find </h3>
+            </DashCard>
+          </Col>
+        </Row>
+        <div
+          style={{
+            display: "grid",
+            // width: "100%",
+            gridGap: "20px",
+            gridTemplateColumns: "repeat(1,1fr)",
+          }}
+        >
+          <ChartWrapper>
+            <ItemsChart />
+          </ChartWrapper>
+          <ChartWrapper>
+            <CategoriesChart />
+          </ChartWrapper>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }
@@ -189,15 +166,14 @@ Dashboard.propTypes = {
   getCurrentProfile: PropTypes.func.isRequired,
   deleteAccount: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  profile: state.profile
+  profile: state.profile,
 });
 
-export default connect(
-  mapStateToProps,
-  { getCurrentProfile, deleteAccount }
-)(Dashboard);
+export default connect(mapStateToProps, { getCurrentProfile, deleteAccount })(
+  Dashboard
+);

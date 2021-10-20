@@ -29,7 +29,7 @@ class Login extends Component {
       email: "",
       password: "",
       visible: false,
-      errors: {}
+      errors: {},
     };
     this.handleClose = () => {
       return this.setState({ visible: false });
@@ -58,12 +58,12 @@ class Login extends Component {
     }
   }
 
-  handleLogin = e => {
+  handleLogin = (e) => {
     e.preventDefault();
 
     const userData = {
       email: this.state.email,
-      password: this.state.password
+      password: this.state.password,
     };
 
     this.props.loginUser(userData, this.props.history);
@@ -73,7 +73,7 @@ class Login extends Component {
     if (!isEmpty(this.state.email, this.state.password)) {
       const userData = {
         email: this.state.email,
-        password: this.state.password
+        password: this.state.password,
       };
 
       if (!isEmpty(this.props.loginUser(userData, this.props.history))) {
@@ -89,11 +89,11 @@ class Login extends Component {
     }
   };
 
-  handleEmail = e => {
+  handleEmail = (e) => {
     this.setState({ email: e.target.value });
   };
 
-  handlePassword = e => {
+  handlePassword = (e) => {
     this.setState({ password: e.target.value });
   };
 
@@ -112,7 +112,7 @@ class Login extends Component {
               borderBottomRightRadius: "7px",
               zIndex: 99,
               opacity: 1.35,
-              borderTop: "3px solid #40A9FF"
+              borderTop: "3px solid #40A9FF",
             }}
           >
             <h1 style={{ textAlign: "center" }}>Login EPS-IMS</h1>
@@ -132,13 +132,13 @@ class Login extends Component {
                   rules: [
                     {
                       type: "email",
-                      message: "The input is not a valid Email!"
+                      message: "The input is not a valid Email!",
                     },
                     {
                       required: true,
-                      message: "Please enter your email"
-                    }
-                  ]
+                      message: "Please enter your email",
+                    },
+                  ],
                 })(
                   <Input
                     prefix={
@@ -152,8 +152,8 @@ class Login extends Component {
               <FormItem label="Password">
                 {getFieldDecorator("password", {
                   rules: [
-                    { required: true, message: "Please enter your password" }
-                  ]
+                    { required: true, message: "Please enter your password" },
+                  ],
                 })(
                   <Input.Password
                     prefix={
@@ -199,15 +199,12 @@ const UserLogin = Form.create({ name: "login" })(Login);
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.errors,
 });
 
-export default connect(
-  mapStateToProps,
-  { loginUser }
-)(UserLogin);
+export default connect(mapStateToProps, { loginUser })(UserLogin);

@@ -6,7 +6,6 @@ const DefaultLayout = () => (
   <React.Fragment>
     <Header />
     <Main />
-    <div>Footer</div>
   </React.Fragment>
 );
 

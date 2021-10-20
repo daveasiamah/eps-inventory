@@ -15,7 +15,7 @@ import {
   DatePicker,
   Table,
   // Icon,
-  Spin
+  Spin,
 } from "antd";
 import styled from "styled-components";
 
@@ -84,16 +84,16 @@ class Inventory extends Component {
       pagination: {},
       disabled: true,
       loading: false,
-      errors: {}
+      errors: {},
     };
   }
 
   _isMounted = true;
 
-  handleTopUp = e => {
+  handleTopUp = (e) => {
     e.preventDefault();
     // const check =()=>{
-    this.props.form.validateFields(err => {
+    this.props.form.validateFields((err) => {
       if (!err) {
         console.log("success");
       }
@@ -115,7 +115,7 @@ class Inventory extends Component {
       part_number,
       manufacture_date,
       exp_date,
-      quantity
+      quantity,
     } = this.state;
     if (
       item_name !== "" &&
@@ -142,7 +142,7 @@ class Inventory extends Component {
         part_number,
         manufacture_date,
         exp_date,
-        quantity
+        quantity,
       };
 
       fetch(`${baseServerUri}/api/inventory`, {
@@ -150,15 +150,15 @@ class Inventory extends Component {
         body: JSON.stringify(newStockItem),
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-        .then(res => {
+        .then((res) => {
           this.props.form.resetFields();
           alert("Stock updated successfully!");
           this.fetchInventory();
         })
-        .catch(err => {
+        .catch((err) => {
           alert("Error ocurred" + err);
           this.setState({ errors: err });
         });
@@ -167,45 +167,45 @@ class Inventory extends Component {
     }
   };
 
-  handlePrice = e => {
+  handlePrice = (e) => {
     this.setState({ price: e.target.value });
   };
 
   handleChecked = () => {
     this.setState({
-      disabled: !this.state.disabled
+      disabled: !this.state.disabled,
     });
   };
 
-  handleLocation = value => {
+  handleLocation = (value) => {
     this.setState({ location: value });
   };
 
-  handleRemarks = e => {
+  handleRemarks = (e) => {
     this.setState({ remarks: e.target.value });
   };
 
-  handlePartNumber = e => {
+  handlePartNumber = (e) => {
     this.setState({ part_number: e.target.value });
   };
 
-  handlePurchaseType = value => {
+  handlePurchaseType = (value) => {
     this.setState({ purchase_type: value });
   };
 
-  handleQuantity = value => {
+  handleQuantity = (value) => {
     this.setState({ quantity: value });
   };
 
-  handleSupplier = value => {
+  handleSupplier = (value) => {
     this.setState({ supplier: value });
   };
 
-  handleTransactionType = value => {
+  handleTransactionType = (value) => {
     this.setState({ transaction_type: value });
   };
 
-  handleWaybill = e => {
+  handleWaybill = (e) => {
     this.setState({ waybill: e.target.value });
   };
 
@@ -217,27 +217,27 @@ class Inventory extends Component {
     this.setState({ manufacture_date: dateString });
   };
 
-  handleItemSelect = itemId => {
+  handleItemSelect = (itemId) => {
     let Items = this.state.items;
     //Search for the current item in state
     // let currentItem = Items.find(itemById => itemById._id === itemId);
 
     // let currentItem = Items.filter(itemById => itemById._id === itemId);
-    let currentItem = Items.filter(cItemId => cItemId._id === itemId);
+    let currentItem = Items.filter((cItemId) => cItemId._id === itemId);
 
     this.setState({
-      selectedItem: currentItem
+      selectedItem: currentItem,
     });
 
     // Map items to get selected values
-    currentItem.map(item =>
+    currentItem.map((item) =>
       this.setState({
         item_name: item.item_name,
         category: item.category.category_name,
         status: item.status,
         description: item.description,
         price: item.price,
-        min_stock: item.min_stock
+        min_stock: item.min_stock,
       })
     );
   };
@@ -245,8 +245,8 @@ class Inventory extends Component {
   fetchItems = () => {
     this.setState({ loading: true });
     fetch(`${baseServerUri}/api/items`, { method: "GET" })
-      .then(response => response.json())
-      .then(items => {
+      .then((response) => response.json())
+      .then((items) => {
         const pagination = { ...this.state.pagination };
         //Read total count from server
         pagination.total = items.length;
@@ -254,27 +254,27 @@ class Inventory extends Component {
           this.setState({ loading: false, items: items, pagination });
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
   //Fetching suppliers list from API endpoint.
   fetchSuppliers = () => {
     this.setState({ loading: true });
     fetch(`${baseServerUri}/api/suppliers`, { method: "GET" })
-      .then(response => response.json())
-      .then(suppliers => {
+      .then((response) => response.json())
+      .then((suppliers) => {
         if (this._isMounted) {
           this.setState({ loading: false, suppliers: suppliers });
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
   fetchInventory = () => {
     this.setState({ loading: true });
     fetch(`${baseServerUri}/api/inventory`, { method: "GET" })
-      .then(response => response.json())
-      .then(inventory => {
+      .then((response) => response.json())
+      .then((inventory) => {
         const pagination = { ...this.state.pagination };
         //Read total count from server
         pagination.total = inventory.length;
@@ -283,7 +283,7 @@ class Inventory extends Component {
           this.setState({ loading: false, inventory: inventory, pagination });
         }
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   };
 
   // handleTableChange = (pagination, filters, sorter) => {
@@ -341,7 +341,7 @@ class Inventory extends Component {
               style={{
                 backgroundColor: "#dedede",
                 border: "none",
-                height: "1px"
+                height: "1px",
               }}
             />
           </h2>
@@ -355,8 +355,8 @@ class Inventory extends Component {
                 <FormItem label="Item Name:">
                   {getFieldDecorator("item", {
                     rules: [
-                      { required: true, message: "Please select an item." }
-                    ]
+                      { required: true, message: "Please select an item." },
+                    ],
                   })(
                     <Select
                       showSearch
@@ -371,7 +371,7 @@ class Inventory extends Component {
                           .indexOf(input.toLowerCase()) >= 0
                       }
                     >
-                      {this.state.items.map(item => (
+                      {this.state.items.map((item) => (
                         <Option key={item._id} value={item._id}>
                           {item.item_name}
                         </Option>
@@ -427,9 +427,9 @@ class Inventory extends Component {
                     rules: [
                       {
                         required: true,
-                        message: "Transaction type is required."
-                      }
-                    ]
+                        message: "Transaction type is required.",
+                      },
+                    ],
                   })(
                     <Select
                       showSearch
@@ -453,9 +453,9 @@ class Inventory extends Component {
                     rules: [
                       {
                         required: true,
-                        message: "Purchase type is required."
-                      }
-                    ]
+                        message: "Purchase type is required.",
+                      },
+                    ],
                   })(
                     <Select
                       showSearch
@@ -477,8 +477,8 @@ class Inventory extends Component {
                 <FormItem label="Supplier:">
                   {getFieldDecorator("supplier", {
                     rules: [
-                      { required: true, message: "Supplier is required." }
-                    ]
+                      { required: true, message: "Supplier is required." },
+                    ],
                   })(
                     <Select
                       showSearch
@@ -492,7 +492,7 @@ class Inventory extends Component {
                       }
                       onChange={this.handleSupplier}
                     >
-                      {this.state.suppliers.map(supplier => (
+                      {this.state.suppliers.map((supplier) => (
                         <Option
                           key={supplier._id}
                           value={supplier.supplier_name}
@@ -508,9 +508,9 @@ class Inventory extends Component {
                     rules: [
                       {
                         required: true,
-                        message: "Warehouse/location is required"
-                      }
-                    ]
+                        message: "Warehouse/location is required",
+                      },
+                    ],
                   })(
                     <Select
                       showSearch
@@ -552,9 +552,9 @@ class Inventory extends Component {
                     rules: [
                       {
                         required: true,
-                        message: "Waybill number is required"
-                      }
-                    ]
+                        message: "Waybill number is required",
+                      },
+                    ],
                   })(
                     <Input
                       placeholder="Enter waybill number"
@@ -594,9 +594,9 @@ class Inventory extends Component {
                     rules: [
                       {
                         required: true,
-                        message: "Quantity is required"
-                      }
-                    ]
+                        message: "Quantity is required",
+                      },
+                    ],
                   })(
                     <InputNumber
                       size="large"
@@ -609,7 +609,7 @@ class Inventory extends Component {
                         fontFamily: "verdana",
                         fontWeight: "900",
                         fontSize: "1.5rem",
-                        lineHeight: "1.5rem"
+                        lineHeight: "1.5rem",
                       }}
                     />
                   )}
@@ -631,7 +631,7 @@ class Inventory extends Component {
                       height: "50px",
                       padding: "15px",
                       margin: "10px",
-                      width: "100%"
+                      width: "100%",
                     }}
                     onClick={this.handleTopUp}
                   >
@@ -644,7 +644,7 @@ class Inventory extends Component {
                   <Button
                     type="default"
                     block
-                    onClick={e => {
+                    onClick={(e) => {
                       e.preventDefault();
                       this.props.form.resetFields();
                     }}
@@ -652,7 +652,7 @@ class Inventory extends Component {
                       height: "50px",
                       padding: "15px",
                       margin: "10px",
-                      width: "100%"
+                      width: "100%",
                     }}
                   >
                     Cancel
@@ -668,7 +668,7 @@ class Inventory extends Component {
                 style={{
                   backgroundColor: "#dedede",
                   border: "none",
-                  height: "1px"
+                  height: "1px",
                 }}
               />
             </h2>
@@ -700,49 +700,49 @@ const columns = [
     // ],
     sorter: true,
     // render: item_name => `${item_name.item_name}`,
-    width: "15%"
+    width: "15%",
   },
   {
     title: "Description",
     dataIndex: "description",
-    width: "15%"
+    width: "15%",
   },
   {
     title: "Category",
     dataIndex: "category",
-    width: "10%"
+    width: "10%",
   },
   {
     title: "Quantity",
     dataIndex: "quantity",
-    width: "9%"
+    width: "9%",
   },
   {
     title: "Price",
     dataIndex: "price",
-    width: "9%"
+    width: "9%",
   },
   {
     title: "Status",
     dataIndex: "status",
     filters: [
       { text: "Enabled", value: "enabled" },
-      { text: "Disabled", value: "disabled" }
+      { text: "Disabled", value: "disabled" },
     ],
     sorter: true,
-    width: "9%"
+    width: "9%",
   },
   // { title: "User", dataIndex: "user_name", width: "9%" },
   {
     title: "Remarks",
     dataIndex: "remarks",
 
-    width: "15%"
+    width: "15%",
   },
   {
     title: "Date Updated",
     dataIndex: "date_updated",
-    width: "9%"
+    width: "9%",
     // render: () => (
     //   <span>
     //     <a href="*">{new Date("updatedAt").format("MMDDYYYY")}</a>
@@ -752,19 +752,19 @@ const columns = [
   },
   {
     title: "Date Created",
-    dataIndex: "date_updated",
-    width: "9%"
-  }
+    dataIndex: "date_created",
+    width: "9%",
+  },
 ];
 
 Inventory.propTypes = {
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
 };
 
 const InventoryForm = Form.create({ name: "inventory" })(Inventory);
 
-const mapStateToProps = state => ({
-  auth: state.auth
+const mapStateToProps = (state) => ({
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps)(InventoryForm);

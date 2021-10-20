@@ -17,14 +17,12 @@ class CategoriesChart extends Component {
           margin: 0,
           offsetY: 0,
           style: {
-            fontFamily: "calibri",
-            fontSize: "25px",
-            color: "black"
-          }
-        }
+            fontSize: "20px",
+          },
+        },
       },
       series: [],
-      labels: []
+      labels: [],
     };
   }
 
@@ -32,25 +30,25 @@ class CategoriesChart extends Component {
 
   componentDidMount() {
     axios
-      .get(`${baseServerUri}/api/items`)
-      .then(items => {
+      .get(`${baseServerUri}/api/inventory`)
+      .then((items) => {
         const Items = items.data;
+        console.log(items.data);
+        const categoryNames = Items.map((item) => item.category);
 
-        const ItemNames = Items.map(item => item.item_name);
-
-        const ItemPrice = Items.map(item => item.price);
+        const ItemPrice = Items.map((item) => item.price);
         if (this._isMounted) {
           this.setState({
-            series: ItemPrice
+            series: ItemPrice,
+            labels: categoryNames,
           });
 
-          this.setState({
-            labels: ItemNames
-          });
+          // this.setState({
+          //   labels: categoryNames,
+          // });
         }
-        // console.log(this.state.series);
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }
 
   componentWillUnmount() {
@@ -59,16 +57,14 @@ class CategoriesChart extends Component {
 
   render() {
     return (
-      <div className="pie" style={{ objectFit: "fill", padding: "25px" }}>
-        <Chart
-          options={this.state.options}
-          series={this.state.series}
-          labels={this.state.labels}
-          type="donut"
-          width="100%"
-          height="500px"
-        />
-      </div>
+      <Chart
+        options={this.state.options}
+        series={this.state.series}
+        labels={this.state.labels}
+        type="donut"
+        padding="20px"
+        height="99%"
+      />
     );
   }
 }
